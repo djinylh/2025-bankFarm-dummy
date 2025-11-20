@@ -2,19 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.customer.CustomerMapper">
 
-    <insert id="custJoin">
+    <!--  customer의 PK가 생긴다면 CustomerJoinReq의 custId쪽으로 바로 PK를 주입하겠다  -->
+    <insert id="custJoin" parameterType="com.bankfarm_dummy.bankfarm_dummy.customer.model.CustomerJoinReq" useGeneratedKeys="true" keyProperty="custId">
         INSERT INTO customer
-        SET cust_nm = #{custName},
-            cust_phone = #{custPhone},
-            cust_email = #{custEmail},
-            cust_birth = #{custbirth},
-            cust_crd_point = #{custCrdPoint},
-            cust_ssn = #{custSsn},
-            cust_cd = #{custCd},
-            cust_tp = #{custTp},
-            cust_marketing_yn = #{custMarketingYn}
+        SET cust_nm = #{custName}
+            ,cust_phone = #{custPhone}
+            ,cust_email = #{custEmail}
+            ,cust_birth = #{custbirth}
+            ,cust_crd_point = #{custCrdPoint}
+            ,cust_ssn = #{custSsn}
+            ,cust_cd = #{custCd}
+            ,cust_tp = #{custTp}
+            ,cust_marketing_yn = #{custMarketingYn}
     </insert>
 
+    <insert id="busineesJoin">
+        INSERT INTO business_corporation
+        SET cust_business_number = #{custBsNm}
+            ,cust_id = #{custId}
+            ,cust_company_name = #{custCpNm}
+            ,cust_fax = #{custFax}
+            ,cust_business_yn = #{custBsYn}
+    </insert>
 
 
 

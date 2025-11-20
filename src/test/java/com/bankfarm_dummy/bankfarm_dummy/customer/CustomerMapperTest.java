@@ -1,6 +1,7 @@
 package com.bankfarm_dummy.bankfarm_dummy.customer;
 
 import com.bankfarm_dummy.bankfarm_dummy.Dummy;
+import com.bankfarm_dummy.bankfarm_dummy.customer.model.CustBusinessReq;
 import com.bankfarm_dummy.bankfarm_dummy.customer.model.CustomerJoinReq;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,6 +80,65 @@ class CustomerMapperTest extends Dummy {
             req.setCustTp(custTp[tpIdx]);
             req.setCustMarketingYn(custMarketingYn[ynIdx]);
             customerMapper.custJoin(req);
+
+            // 여기서 부모 PK를 먼저 만들어 줘야 req에 PK값이 들어감
+            sqlSession.flushStatements();
+
+            // 팩스 번호
+            Random rnd = new Random();
+            String[] fax = {"02-","053-", "056-","031-"};
+            int faxIdx = (int)(Math.random() * fax.length);
+            String faxNm = fax[faxIdx] + (100+rnd.nextInt(900)) + "-" + (1000+rnd.nextInt(9000));
+
+            // 개인/법인 사업자 번호가 살아있는지
+            char[] bsYn = {'Y','N'};
+            int bsYnIdx = (int)(Math.random() * bsYn.length);
+            char yn = bsYn[bsYnIdx];
+
+            // 회사 이름 [대충 고객 이름에서 + 회사]
+            String cpNm =  "(주)" +custName + "회사";
+
+            // 여기서 사업자 고객이면
+            if(req.getCustTp().equals("CU012") ){
+                Random red = new Random();
+                StringBuilder sb = new  StringBuilder();
+                for(int k = 0; k < 10; k++){
+                    sb.append(red.nextInt(10));
+                    if(k==2 || k==4){sb.append("-");}
+                }
+
+                CustBusinessReq businesse = new CustBusinessReq();
+                businesse.setCustBsNm(sb.toString());
+                businesse.setCustId(req.getCustId());
+                businesse.setCustCpNm(cpNm);
+                businesse.setCustFax(faxNm);
+                businesse.setCustBsYn(yn);
+
+
+                customerMapper.busineesJoin(businesse);
+            }
+
+
+            // 법인 고객이면
+            if(req.getCustTp().equals("CU013") ) {
+                Random red = new Random();
+                StringBuilder sb = new  StringBuilder();
+
+                for(int k = 0; k < 13; k++){
+                    sb.append(red.nextInt(10));
+                    if(k==6){sb.append("-");}
+                }
+
+
+                CustBusinessReq businesse = new CustBusinessReq();
+                businesse.setCustBsNm(sb.toString());
+                businesse.setCustId(req.getCustId());
+                businesse.setCustCpNm(cpNm);
+                businesse.setCustFax(faxNm);
+                businesse.setCustBsYn(yn);
+                customerMapper.busineesJoin(businesse);
+            }
+
             sqlSession.flushStatements();
 
         }

@@ -8,5 +8,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CustBusinessReq {
-
+    private String custBsNm;
+    private Long custId;
+    private String custCpNm;
+    private String custFax;
+    private char custBsYn;
 }

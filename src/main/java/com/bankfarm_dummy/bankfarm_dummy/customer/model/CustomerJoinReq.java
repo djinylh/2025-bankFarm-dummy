@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 public class CustomerJoinReq {
+    private long custId;
     private String custName;
     private String custPhone;
     private String custEmail;
