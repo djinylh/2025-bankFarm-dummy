@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.branch.BranchMapper">
+
+
+<!--지점 등록-->
+<insert id = "branchJoin" >
+    INSERT INTO branch
+    SET bran_nm  = #{branName}
+        ,bran_tel = #{branTel}
+        ,bran_address = #{branAddress}
+        ,bran_latitude = #{branLatitude}
+        ,bran_longitude = #{branLongitude}
+        ,bran_opened_at = #{branOpenedAt}
+        ,bran_active = #{branActive}
+        ,bran_region_cd = #{branRegionCd}
+        bran_closed_at = #{branClosedAt}
+
+</insert>
+
+
+</mapper>
