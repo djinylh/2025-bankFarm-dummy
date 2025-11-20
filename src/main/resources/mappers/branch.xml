@@ -6,7 +6,7 @@
 <!--지점 등록-->
 <insert id = "branchJoin" >
     INSERT INTO branch
-    SET bran_nm  = #{branName}
+    SET bran_nm  = #{branNm}
         ,bran_tel = #{branTel}
         ,bran_address = #{branAddress}
         ,bran_latitude = #{branLatitude}
@@ -14,8 +14,6 @@
         ,bran_opened_at = #{branOpenedAt}
         ,bran_active = #{branActive}
         ,bran_region_cd = #{branRegionCd}
-        bran_closed_at = #{branClosedAt}
-
 </insert>
 
 
