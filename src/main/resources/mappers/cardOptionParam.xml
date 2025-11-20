@@ -6,14 +6,14 @@
     <insert id="cardOptionParamDetail">
 
         INSERT INTO card_option_param
-        SET card_option_def_id = #{cardOptionCode}
-        ,card_option_des = #{cardOptionName}
+        SET card_option_def_id = #{cardOptionDefId}
+        ,card_option_des = #{cardOptionDes}
         , card_active_yn = #{cardActiveYn}
 
     </insert>
 
     <select id="getListByOption">
-        SELECT card_option_code
+        SELECT card_option_code, card_option_def_id
         FROM card_option_def
     </select>
 

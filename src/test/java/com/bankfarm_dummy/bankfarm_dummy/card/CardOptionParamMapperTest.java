@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class CardOptionParamMapperTest extends Dummy {
 
 
-    final int ADD_ROW_COUNT= 20;
-
     @Test
     void join() {
 
@@ -24,15 +22,26 @@ class CardOptionParamMapperTest extends Dummy {
         // 맵퍼 주소값 얻기
         CardOptionParamMapper cardOptionParamMapper = sqlSession.getMapper(CardOptionParamMapper.class);
 
-        for (int i=0;i<ADD_ROW_COUNT;i++) {
+        List<CardOptionGetRes> res = cardOptionParamMapper.getListByOption();
 
-            List<CardOptionGetRes> res = cardOptionParamMapper.getListByOption();
+        for (CardOptionGetRes res1 : res) {
 
+            if(res1.getCardOptionCode().equals("QUICK_PAY")){
+                String[] pay = {"삼성페이","카카오페이","네이버페이"};
 
+                for(int i =0; i<3; i++){
 
+                    CardOptionParamReq req = new CardOptionParamReq();
+                    req.setCardOptionDefId(res1.getCardOptionDefId());
+                    req.setCardOptionDes(pay[i]);
+                    req.setCardActiveYn('Y');
+                    cardOptionParamMapper.cardOptionParamDetail(req);
+                    sqlSession.flushStatements();
+                }
 
+            }
+            //
 
-            sqlSession.flushStatements();
 
         }
 

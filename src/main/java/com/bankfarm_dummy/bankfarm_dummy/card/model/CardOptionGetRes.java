@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class CardOptionGetRes {
-
     private String cardOptionCode;
-
-
+    private long cardOptionDefId;
 }
