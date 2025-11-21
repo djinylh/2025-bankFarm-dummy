@@ -11,7 +11,7 @@ public class UserCardGetRes {
 
     private long empId;
     private long custId;
-
+    private long cardId;
 
 
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.card.UserCardMapper">
+
+    <!--  customer의 PK가 생긴다면 CustomerJoinReq의 custId쪽으로 바로 PK를 주입하겠다  -->
+    <insert id="userCardJoin" parameterType="com.bankfarm_dummy.bankfarm_dummy.card.model.UserCardReq" useGeneratedKeys="true" keyProperty="cardUserId">
+        INSERT INTO user_card
+        SET
+        card_id = #{cardId}
+        ,cust_id = #{custId}
+        ,emp_id = #{empId}
+        ,card_num = #{cardNum}
+        ,card_sts = #{cardSts}
+        ,card_day_limit = #{cardDayLimit}
+        , card_month_limit = #{cardMonthLimit}
+        , card_crt_at = #{cardCrtAt}
+        , card_ed_at = #{cardEdAt}
+        , card_deac_at = #{cardDeacAt}
+    </insert>
+
+</mapper>
