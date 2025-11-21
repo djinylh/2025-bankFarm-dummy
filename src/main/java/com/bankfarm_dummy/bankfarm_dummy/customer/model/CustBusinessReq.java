@@ -14,3 +14,5 @@ public class CustBusinessReq {
     private String custFax;
     private char custBsYn;
 }
+
+

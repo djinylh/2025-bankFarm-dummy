@@ -8,4 +8,5 @@ public class BankfarmDummyApplication {
     public static void main(String[] args) {
         SpringApplication.run(BankfarmDummyApplication.class, args);
     }
+
 }

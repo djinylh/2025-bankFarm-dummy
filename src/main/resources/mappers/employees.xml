@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.employees.EmployeesMapper">
+
+    <insert id="employeesJoin">
+        INSERT INTO employees
+        SET bran_id = #{branId}
+            ,emp_email = #{empEmail}
+            ,emp_nm = #{empNm}
+            ,emp_phone = #{empPhone}
+            ,emp_hire_dt = #{empHireDt}
+            ,emp_resignation_at = #{empResignationAt}
+            ,emp_position_nm = #{empPositionNm}
+    </insert>
+
+
+
+</mapper>

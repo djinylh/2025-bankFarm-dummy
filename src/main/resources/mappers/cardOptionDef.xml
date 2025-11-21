@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.card.CardMapper">
+
+
+    <insert id="cardOptionDef">
+
+        INSERT INTO card_option_def
+        SET card_option_code = #{cardOptionCode}
+        ,card_option_name = #{cardOptionName}
+
+    </insert>
+
+
+</mapper>

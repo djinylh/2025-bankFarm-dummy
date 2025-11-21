@@ -1,9 +1,11 @@
 package com.bankfarm_dummy.bankfarm_dummy.branch.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -16,10 +18,9 @@ public class BranchReq {
     private String branAddress;
     private Double branLatitude;
     private Double branLongitude;
-    private Date branOpenedAt;
+    private LocalDate branOpenedAt;
     private String branActive;
     private String branRegionCd;
-    private Date branClosedAt;
 }
 
 

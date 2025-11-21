@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.card.CardMapper">
+
+<insert id="cardProduct">
+
+    INSERT INTO card
+    SET card_nm = #{cardNm}
+    ,card_annual_fee = #{cardAnnualFee}
+    ,card_tp = #{cardTp}
+    , card_min_require = #{cardMinRequire}
+    ,card_sale_yn = #{cardSaleYn}
+    , card_ed_at = #{cardEdAt}
+
+</insert>
+
+
+
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.prod_document.ProdDocumentMapper">
+
+    <insert id="prodDocumentJoin">
+        INSERT INTO prod_document
+        SET bran_id = #{branId}
+        ,doc_prod_tp = #{docProdTp}
+        ,doc_prod_id = #{docProdId}
+        ,doc_nm = #{docNm}
+    </insert>
+
+
+
+</mapper>
