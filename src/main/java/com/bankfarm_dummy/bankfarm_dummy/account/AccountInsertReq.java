@@ -17,8 +17,4 @@ public class AccountInsertReq {
     private String acctStsCd;
     private char acctIsDedYn;
 
-
-
-
-
 }

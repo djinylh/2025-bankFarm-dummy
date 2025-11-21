@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.depo.DepoProdMapper">
+
+
+    <!--지점 등록-->
+    <insert id = "depoProdInsert" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.model.DepoProdInsertReq" useGeneratedKeys="true" keyProperty="depoProdId" >
+        INSERT INTO depo_prod
+        SET depo_prod_nm  = #{depoProdNm}
+        ,depo_prod_des = #{depoPodDes}
+        ,depo_intrst_calc_unit = #{depoIntrstCalcUnit}
+        ,depo_intrst_pay_cycle = #{depoIntrstPayCycle}
+        ,depo_intrst_calc_tp = #{depoIntrstCalcTp}
+        ,depo_sale_yn = #{depoSaleYn}
+    </insert>
+
+
+</mapper>
