@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.account.AccountMapper">
+
+
+    <!--지점 등록-->
+    <insert id = "accountInsert" parameterType="com.bankfarm_dummy.bankfarm_dummy.account.AccountInsertReq" useGeneratedKeys="true" keyProperty="acctId" >
+        INSERT INTO account
+        SET cust_id  = #{custId}
+        ,acct_tp = #{accTp}
+        ,acct_sav_tp = #{acctSavTp}
+        ,acct_num = #{acctNum}
+        ,acct_pw = #{acctPw}
+        ,acct_bal = #{acctBal}
+        ,acct_day_limit = #{acctDayLimit}
+        ,acct_sts_cd = #{acctStsCd}
+        ,acct_is_ded_yn = #{acctIsDedYn}
+    </insert>
+
+
+</mapper>
