@@ -14,7 +14,7 @@
         ,bran_opened_at = #{branOpenedAt}
         ,bran_active = #{branActive}
         ,bran_region_cd = #{branRegionCd}
-        bran_closed_at = #{branClosedAt}
+        ,bran_closed_at = #{branClosedAt}
 
 </insert>
 
