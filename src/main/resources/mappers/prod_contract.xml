@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.depo.DepoContractMapper">
+
+    <!--  customer의 PK가 생긴다면 CustomerJoinReq의 custId쪽으로 바로 PK를 주입하겠다  -->
+    <insert id="depoContractInsert" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.model.DepoContractInsertReq" useGeneratedKeys="true" keyProperty="depoContractId">
+        INSERT INTO depo_contract
+        SET cust_id = #{custId}
+        ,depo_prod_id = #{depoProdId}
+        ,acct_id = #{acctId}
+        ,emp_id = #{empId}
+        ,depo_prod_tp = #{depoProdTp}
+        ,depo_contract_dt = #{depoContractDt}
+        ,depo_maturity_dt = #{depoMaturityDt}
+        ,depo_applied_intrst_rt = #{depoAppliedIntrstRt}
+        ,depo_active_cd = #{depoActiveCd}
+    </insert>
+
+</mapper>
