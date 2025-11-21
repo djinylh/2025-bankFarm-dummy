@@ -40,6 +40,62 @@ class CardOptionParamMapperTest extends Dummy {
                 }
 
             }
+            else if(res1.getCardOptionCode().equals("SMS_ALERT")){
+                String[] pay = {"문자수신","PUSH알림","이메일알림"};
+
+                for(int i =0; i<3; i++){
+
+                    CardOptionParamReq req = new CardOptionParamReq();
+                    req.setCardOptionDefId(res1.getCardOptionDefId());
+                    req.setCardOptionDes(pay[i]);
+                    req.setCardActiveYn('Y');
+                    cardOptionParamMapper.cardOptionParamDetail(req);
+                    sqlSession.flushStatements();
+                }
+
+            }
+            else if(res1.getCardOptionCode().equals("TRANSIT")){
+                String[] pay = {"T-money","캐시비","후불교통카드"};
+
+                for(int i =0; i<3; i++){
+
+                    CardOptionParamReq req = new CardOptionParamReq();
+                    req.setCardOptionDefId(res1.getCardOptionDefId());
+                    req.setCardOptionDes(pay[i]);
+                    req.setCardActiveYn('Y');
+                    cardOptionParamMapper.cardOptionParamDetail(req);
+                    sqlSession.flushStatements();
+                }
+
+            }
+            else if(res1.getCardOptionCode().equals("OVERSEAS")){
+                String[] pay = {"한도0원","한도100달러","한도300달러"};
+
+                for(int i =0; i<3; i++){
+
+                    CardOptionParamReq req = new CardOptionParamReq();
+                    req.setCardOptionDefId(res1.getCardOptionDefId());
+                    req.setCardOptionDes(pay[i]);
+                    req.setCardActiveYn('Y');
+                    cardOptionParamMapper.cardOptionParamDetail(req);
+                    sqlSession.flushStatements();
+                }
+
+            }
+            else if(res1.getCardOptionCode().equals("ONLINE_AUTH")){
+                String[] pay = {"OTP","PIN","BIO"};
+
+                for(int i =0; i<3; i++){
+
+                    CardOptionParamReq req = new CardOptionParamReq();
+                    req.setCardOptionDefId(res1.getCardOptionDefId());
+                    req.setCardOptionDes(pay[i]);
+                    req.setCardActiveYn('Y');
+                    cardOptionParamMapper.cardOptionParamDetail(req);
+                    sqlSession.flushStatements();
+                }
+
+            }
             //
 
 
