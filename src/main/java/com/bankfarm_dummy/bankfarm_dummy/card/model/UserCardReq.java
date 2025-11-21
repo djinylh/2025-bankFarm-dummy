@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 public class UserCardReq {
 
+    private long cardUserId;
     private long cardId;
     private long custId;
     private long empId;
@@ -20,7 +22,7 @@ public class UserCardReq {
     private int cardDayLimit;
     private int cardMonthLimit;
     private LocalDateTime cardCrtAt;
-    private LocalDateTime cardEdAt;
+    private LocalDate cardEdAt;
     private LocalDateTime cardDeacAt;
 
 
