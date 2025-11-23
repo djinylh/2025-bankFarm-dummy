@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.FxMapper">
+
+    <!--    직원 아이디 가져오기-->
+    <select id="selectEmployeeIds" resultType="long">
+        SELECT emp_id
+        FROM employees
+    </select>
+
+    <!--    고객 아이디 가져오기-->
+    <select id="selectCustomerIds" resultType="long">
+        SELECT cust_id
+        FROM customer
+    </select>
+
+    <!--    활성화 된 통화 아이디 가져오기-->
+    <select id="selectActiveCurrencies">
+        SELECT fx_currency_id
+        FROM fx_currency
+        WHERE fx_active_yn = 'Y'
+    </select>
+
+    <insert id="insertFxRateHistory">
+        INSERT INTO fx_rt_history
+        SET fx_currency_id = #{fxCurrencyId},
+        fx_charge_rt   = #{fxChargeRt},
+        fx_commission  = #{fxCommission},
+        fx_crt_at      = #{fxCrtAt}
+    </insert>
+
+    <select id="selectActiveFxLatestRate" resultType="FxRtRes">
+        SELECT
+        c.fx_currency_id      AS fxCurrencyId,
+        c.fx_nation           AS fxNation,
+        c.fx_min_limit        AS fxMinLimit,
+        c.fx_currency_symbol  AS fxCurrencySymbol,
+        c.fx_currency_nm      AS fxCurrencyNm,
+        r.fx_rt_id            AS fxRtId,
+        r.fx_charge_rt        AS fxChargeRt,
+        r.fx_commission       AS fxCommission,
+        r.fx_crt_at           AS fxCrtAt
+        FROM fx_currency c
+        JOIN (
+        SELECT
+        fx_currency_id,
+        MAX(fx_rt_id) AS max_rt_id
+        FROM fx_rt_history
+        GROUP BY fx_currency_id
+        ) latest
+        ON latest.fx_currency_id = c.fx_currency_id
+        JOIN fx_rt_history r
+        ON r.fx_currency_id = latest.fx_currency_id
+        AND r.fx_rt_id       = latest.max_rt_id
+        WHERE c.fx_active_yn = 'Y'
+    </select>
+</mapper>

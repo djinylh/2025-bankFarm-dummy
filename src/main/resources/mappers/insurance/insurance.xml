@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.insurance.InsuranceMapper">
+    <insert id="insrProdInsert">
+        INSERT INTO insr_prod
+        SET
+        part_id = #{partId},
+        insr_cd = #{insrCd},
+        insr_nm = #{insrNm},
+        insr_prod_tp = #{insrProdTp},
+        insr_open_dt = #{insrOpenDt},
+        insr_close_dt = #{insrCloseDt},
+        insr_commission = #{insrCommission},
+        insr_sale_yn = #{insrSaleYn}
+    </insert>
+
+    <insert id="insrContractInsert">
+        INSERT INTO insr_contract
+        SET
+        insr_prod_id = #{insrProdId},
+        cust_id = #{custId},
+        emp_id = #{empId},
+        insr_contract_num = #{insrContractNum},
+        insr_bank_cd = #{insrBankCd},
+        insr_acct_num = #{insrAcctNum},
+        insr_contract_dt = #{insrContractDt},
+        insr_maturity_dt = #{insrMaturityDt},
+        insr_approval_cd = #{insrApprovalCd},
+        insr_active_cd = #{insrActiveCd},
+        insr_renewable_yn = #{insrRenewableYn},
+        insr_refund_amt = #{insrRefundAmt},
+        insr_payment_day = #{insrPaymentDay},
+        insr_payment_end_dt = #{insrPaymentEndDt}
+    </insert>
+
+    <insert id="insrPaymentHistoryInsert">
+        INSERT INTO insr_payment_history
+        SET
+        insr_payment_seq = #{insrPaymentSeq},
+        insr_contract_id = #{insrContractId},
+        insr_payment_dt = #{insrPaymentDt},
+        insr_expected_amt = #{insrExpectedAmt},
+        insr_paid_dt = #{insrPaidDt},
+        insr_paid_amt = #{insrPaidAmt},
+        insr_paid_yn = #{insrPaidYn},
+        insr_od_yn = #{insrOdYn}
+    </insert>
+
+    <insert id="insrTermInsert">
+        INSERT INTO insr_term
+        SET
+        insr_contract_id = #{insrContractId},
+        insr_term_tp     = #{insrTermTp},
+        insr_term_dt     = #{insrTermDt},
+        insr_term_reason = #{insrTermReason}
+    </insert>
+
+<!--    보험 상품 아이디 가져오기-->
+    <select id="selectInsrProdIds" resultType="long">
+        SELECT insr_prod_id
+        FROM insr_prod
+    </select>
+
+<!--    직원 아이디 가져오기-->
+    <select id="selectEmployeeIds" resultType="long">
+        SELECT emp_id
+        FROM employees
+    </select>
+
+<!--    고객 아이디 가져오기-->
+    <select id="selectCustomerIds" resultType="long">
+        SELECT cust_id
+        FROM customer
+    </select>
+
+<!--    제휴사 아이디 가져오기-->
+    <select id="selectActivePartnerIds">
+        SELECT part_id
+        FROM partner
+        WHERE part_use_yn = 'Y'
+    </select>
+
+<!--    모든 보험 계약 가져오기-->
+    <select id="selectAllContracts" resultType="com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrContractRes">
+        SELECT insr_contract_id,
+            insr_prod_id,
+            insr_contract_dt,
+            insr_payment_day,
+            insr_payment_end_dt
+        FROM insr_contract
+    </select>
+
+<!--    해지/만기된 보험 계약 가져오기-->
+    <select id="selectExpiredContracts" resultType="com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrContractRes">
+        SELECT
+        insr_contract_id,
+        insr_contract_dt,
+        insr_maturity_dt,
+        insr_active_cd
+        FROM insr_contract
+        WHERE insr_active_cd IN ('CS002', 'CS003', 'CS004')
+    </select>
+</mapper>
