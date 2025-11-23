@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://192.168.0.144:3307/db_odd_adv_2
+    url: jdbc:mariadb://112.222.157.157:5298/db_odd_adv_2
     username: odd_adv_2
     password: index502
 
