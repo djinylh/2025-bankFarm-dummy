@@ -76,8 +76,6 @@ class DemandDepoAccountMapperTest extends Dummy {
         accountMapper.accountInsert(req);
         // 계좌 생성.
         sqlSession.flushStatements();
-        sqlSession.commit();
-        sqlSession.close();
 
 
         List<GetDemandProdRes> list= accountMapper.prodByDemand();
@@ -115,8 +113,6 @@ class DemandDepoAccountMapperTest extends Dummy {
         depoContractMapper.depoContractInsert(contReq);
         //계약 생성
             sqlSession.flushStatements();
-            sqlSession.commit();
-            sqlSession.close();
 
 
 
@@ -133,11 +129,11 @@ class DemandDepoAccountMapperTest extends Dummy {
           prodDocumentMapper.prodDocumentJoin(prodReq);
 
             sqlSession.flushStatements();
-            sqlSession.commit();
-            sqlSession.close();
-
 
         }
+        sqlSession.commit();
+        sqlSession.close();
+
 
     }
 
