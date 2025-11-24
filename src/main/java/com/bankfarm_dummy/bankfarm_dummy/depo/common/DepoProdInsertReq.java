@@ -17,5 +17,5 @@ public class DepoProdInsertReq {
     private String depoIntrstCalcUnit;
     private String depoIntrstPayCycle;
     private String depoIntrstCalcTp;
-    private char depoSaleYn;
+    private String depoSaleYn;
 }
