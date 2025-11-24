@@ -38,7 +38,7 @@ class DemandDepoProdMapperTest extends Dummy {
         String[] acctProdMName= {"든든","스마트","요구불","플러스","플랜","행복","사랑","가득"};
         int mNameIdx = (int)(Math.random()*acctProdMName.length);
 
-        String acctFullName = acctProdFName[i] +  acctProdMName[mNameIdx] + "통장" + (int)(Math.random()* 20)+1;
+        String acctFullName = acctProdFName[i] +  acctProdMName[mNameIdx] + "요구불 통장" + (int)(Math.random()* 20)+1;
 
         // 상품 설명
         String[] acctProdDes= {
@@ -69,7 +69,7 @@ class DemandDepoProdMapperTest extends Dummy {
         DepoProdInsertReq prodReq = new DepoProdInsertReq();
         prodReq.setDepoProdNm(acctFullName);
         prodReq.setDepoStDt(randomDate);
-//        prodReq.setDepoEdDt(randomDate2);
+        prodReq.setDepoEdDt(randomDate2);
         prodReq.setDepoPodDes(acctProdDes[desIdx]);
         prodReq.setDepoIntrstCalcUnit("DO018");
         prodReq.setDepoIntrstPayCycle("DO022");

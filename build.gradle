@@ -39,6 +39,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/net.datafaker/datafaker
     implementation 'net.datafaker:datafaker:2.5.3'
+
+    //암호와 의존성 비크립트
+    implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {

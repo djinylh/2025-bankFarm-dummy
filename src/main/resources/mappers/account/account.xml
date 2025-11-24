@@ -18,11 +18,17 @@
     </insert>
 
     <select id="countByAccountNum">
-        SELECT acctId
+        SELECT acct_id
         FROM account
         WHERE acct_num = #{acctNum}
     </select>
 
+
+    <select id="prodByDemand">
+        SELECT d.depo_prod_id
+        FROM depo_prod d
+        WHERE d.depo_prod_nm LIKE '%요구불%'
+    </select>
 
 
 </mapper>
