@@ -3,18 +3,27 @@
 <mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.branch.BranchMapper">
 
 
-<!--지점 등록-->
-<insert id = "branchJoin" >
-    INSERT INTO branch
-    SET bran_nm  = #{branNm}
-        ,bran_tel = #{branTel}
-        ,bran_address = #{branAddress}
-        ,bran_latitude = #{branLatitude}
-        ,bran_longitude = #{branLongitude}
-        ,bran_opened_at = #{branOpenedAt}
-        ,bran_active = #{branActive}
-        ,bran_region_cd = #{branRegionCd}
-</insert>
+    <!--지점 등록-->
+    <insert id = "branchJoin" >
+        INSERT INTO branch
+        SET bran_nm  = #{branNm}
+            ,bran_tel = #{branTel}
+            ,bran_address = #{branAddress}
+            ,bran_latitude = #{branLatitude}
+            ,bran_longitude = #{branLongitude}
+            ,bran_opened_at = #{branOpenedAt}
+            ,bran_active = #{branActive}
+            ,bran_region_cd = #{branRegionCd}
+    </insert>
+
+    <!--직원 지점 찾기-->
+    <select id="getBranchIdByEmpId">
+        SELECT e.bran_id
+        FROM employees e
+        JOIN branch b
+        ON e.bran_id = b.bran_id
+        WHERE e.emp_id = #{empId}
+    </select>
 
 
 </mapper>

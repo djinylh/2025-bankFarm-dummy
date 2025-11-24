@@ -8,7 +8,7 @@ import lombok.Setter;
 public class AccountInsertReq {
     private long acctId;
     private long custId;
-    private long accTp;
+    private byte accTp;
     private String acctSavTp;
     private String acctNum;
     private String acctPw;

@@ -74,7 +74,8 @@ class BranchMapperTest extends Dummy {
 
             branchMapper.branchJoin(req);
             sqlSession.flushStatements();
-
+            sqlSession.commit();
+            sqlSession.close();
 
             }
 

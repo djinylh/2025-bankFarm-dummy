@@ -83,6 +83,8 @@ class CustomerMapperTest extends Dummy {
 
             // 여기서 부모 PK를 먼저 만들어 줘야 req에 PK값이 들어감
             sqlSession.flushStatements();
+            sqlSession.commit();
+            sqlSession.close();
 
             // 팩스 번호
             Random rnd = new Random();
@@ -141,6 +143,8 @@ class CustomerMapperTest extends Dummy {
             }
 
             sqlSession.flushStatements();
+            sqlSession.commit();
+            sqlSession.close();
 
         }
 

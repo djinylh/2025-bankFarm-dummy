@@ -7,6 +7,8 @@
     <insert id = "depoProdInsert" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoProdInsertReq" useGeneratedKeys="true" keyProperty="depoProdId" >
         INSERT INTO depo_prod
         SET depo_prod_nm  = #{depoProdNm}
+        ,depo_st_dt = #{depoStDt}
+        ,depo_ed_dt = #{depoEdDt}
         ,depo_prod_des = #{depoPodDes}
         ,depo_intrst_calc_unit = #{depoIntrstCalcUnit}
         ,depo_intrst_pay_cycle = #{depoIntrstPayCycle}

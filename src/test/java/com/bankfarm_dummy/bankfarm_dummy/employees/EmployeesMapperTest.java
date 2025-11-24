@@ -62,6 +62,8 @@ class EmployeesMapperTest extends Dummy {
         }
         empMapper.employeesJoin(epReq);
         sqlSession.flushStatements();
+            sqlSession.commit();
+            sqlSession.close();
         }
 
     }

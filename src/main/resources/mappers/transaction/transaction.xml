@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.transaction.TransactionMapper">
+<!--     입출금 INSERT-->
+    <insert id="transactionInsert">
+        INSERT INTO transaction
+        SET acct_id = #{acctId}
+        ,   trns_fee_id = #{trnsFeeId}
+        ,   trns_amt = #{trnsAmt}
+        ,   trns_acct_num = #{trnsAcctNum}
+        ,   trns_bal = #{trnsBal}
+        ,   trns_tp = #{trnsTp}
+        ,   trns_des = #{trnsDes}
+    </insert>
+<!--    개설하고 첫 입금 없는 계좌 찾기-->
+    <select id="firstTransaction">
+        SELECT a.`acct_id`, a.acct_bal
+        FROM account a
+        LEFT JOIN transaction t
+        ON a.`acct_id` = t.`acct_id`
+        WHERE t.`acct_id` IS NULL
+        LIMIT 10000
+    </select>
+
+
+</mapper>
