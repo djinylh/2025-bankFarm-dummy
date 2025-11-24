@@ -12,10 +12,15 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DemandDepoAccountMapperTest extends Dummy {
+class DemandDepoProdMapperTest extends Dummy {
 
     @Test
-    void getAccountByID() {
+    void demandDepoProdMapperTest(){
+
+
+
+        for(int i=0;i<8;i++){
+
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
 
         //계좌 맵퍼
@@ -33,12 +38,12 @@ class DemandDepoAccountMapperTest extends Dummy {
 
         //상품 이름
         String[] acctProdFName= {"바로","체크","편한","생활","자유","내맘대로","평생","미래"};
-        int fNameIdx = (int)(Math.random()*acctProdFName.length);
+//        int fNameIdx = (int)(Math.random()*acctProdFName.length);
 
         String[] acctProdMName= {"든든","스마트","요구불","플러스","플랜","행복","사랑","가득"};
         int mNameIdx = (int)(Math.random()*acctProdMName.length);
 
-        String acctFullName = acctProdFName[fNameIdx] +  acctProdMName[mNameIdx] + "통장" + (int)(Math.random()* 20)+1;
+        String acctFullName = acctProdFName[i] +  acctProdMName[mNameIdx] + "통장" + (int)(Math.random()* 20)+1;
 
         // 상품 설명
         String[] acctProdDes= {
@@ -53,12 +58,12 @@ class DemandDepoAccountMapperTest extends Dummy {
 
 
         LocalDate start = LocalDate.of(1980, 1, 2);
-        LocalDate end   = LocalDate.of(2025, 12, 31);
+        LocalDate end   = LocalDate.of(2020, 12, 31);
         long days = java.time.temporal.ChronoUnit.DAYS.between(start, end);
         LocalDate randomDate = start.plusDays((long)(Math.random() * days));
 
 
-        LocalDate start2 = LocalDate.of(2000, 1, 2);
+        LocalDate start2 = LocalDate.of(2021, 1, 2);
         LocalDate end2   = LocalDate.of(2025, 12, 30);
         long days2 = java.time.temporal.ChronoUnit.DAYS.between(start2, end2);
         LocalDate randomDate2 = start2.plusDays((long)(Math.random() * days2));
@@ -79,11 +84,11 @@ class DemandDepoAccountMapperTest extends Dummy {
         // 계좌 상품 만들기
         depoProdMapper.depoProdInsert(prodReq);
         sqlSession.flushStatements();
-
-
+        }
 
 
     }
+
 
 
 }
