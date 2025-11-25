@@ -105,7 +105,6 @@ class DemandDepoAccountMapperTest extends Dummy {
         contReq.setDepoProdId(finalNum);
         contReq.setAcctId(req.getAcctId());
         contReq.setEmpId(empId);
-        contReq.setDepoProdTp("PD006");
         contReq.setDepoContractDt(randomDate);
         contReq.setDepoMaturityDt(randomDate2);
         contReq.setDepoActiveCd("AP002");
