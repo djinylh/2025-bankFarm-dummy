@@ -16,4 +16,22 @@
         ,depo_active_cd = #{depoActiveCd}
     </insert>
 
+    <!--    직원 아이디 가져오기-->
+    <select id="selectEmployeeIds" resultType="long">
+        SELECT emp_id
+        FROM employees
+    </select>
+
+    <!--    고객 아이디 가져오기-->
+    <select id="selectCustomerIds" resultType="long">
+        SELECT cust_id
+        FROM customer
+    </select>
+
+<!--    요구불 제외한 상품 아이디 가져오기-->
+    <select id="selectDepoProdIds">
+        SELECT depo_prod_id
+        FROM depo_prod
+        WHERE depo_prod_tp != 'DO001'
+    </select>
 </mapper>

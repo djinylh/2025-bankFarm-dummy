@@ -1,18 +1,15 @@
 package com.bankfarm_dummy.bankfarm_dummy.deposit;
 
 import com.bankfarm_dummy.bankfarm_dummy.Dummy;
+import com.bankfarm_dummy.bankfarm_dummy.depo.DepoProdTermReq;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoProdInsertReq;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoProdMapper;
-import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrProdReq;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.List;
+
 import java.util.Random;
 
 public class DepoProdMapperTest extends Dummy {
@@ -20,7 +17,7 @@ public class DepoProdMapperTest extends Dummy {
 
   @Test
   void insertDepoProd() {
-    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.SIMPLE);
     DepoProdMapper depoProdMapper = sqlSession.getMapper(DepoProdMapper.class);
 
     Random rnd = new Random();
@@ -136,7 +133,48 @@ public class DepoProdMapperTest extends Dummy {
 
       depoProdMapper.insertDepoProd(req);
 
-      if (i > 0 && i % 200 == 0) {
+      System.out.println("new prodId = " + req.getDepoProdId());
+
+      // 만기 개월
+      int[] monthArr = {12, 24, 36, 48, 60, 72, 84, 96, 108, 120};
+      int termMonth = monthArr[rnd.nextInt(monthArr.length)];
+
+      int minAmt = 0;
+      Integer maxAmt = 0;
+
+      if(prodTpCode.equals("DO002")){
+        // 정기예금 최소 예치 금액
+        int[] depoMinArr = {100000, 2000000, 3000000};
+        minAmt = depoMinArr[rnd.nextInt(depoMinArr.length)];
+        maxAmt = null;
+      } else if (prodTpCode.equals("DO003")) {
+        // 정기적금 최소 납입 금액
+        int[] savInstallMinArr = {10000, 20000};
+        minAmt = savInstallMinArr[rnd.nextInt(savInstallMinArr.length)];
+
+        // 정기적금 최대 납입 금액
+        int[] saveInstallMaxArr = {1000000, 2000000, 3000000, 4000000, 5000000};
+        maxAmt = saveInstallMaxArr[rnd.nextInt(saveInstallMaxArr.length)];
+      }else if (prodTpCode.equals("DO004")) {
+        // 자유 적금 최소 납입 금액
+        int[] saveFreeMinArr = {1000, 5000, 10000};
+        minAmt = saveFreeMinArr[rnd.nextInt(saveFreeMinArr.length)];
+
+        // 자유 적금 최대 납입 금액
+        int[] saveFreeMaxArr = {1000000, 2000000, 3000000};
+        maxAmt = saveFreeMaxArr[rnd.nextInt(saveFreeMaxArr.length)];
+
+      }
+
+      DepoProdTermReq termReq = new DepoProdTermReq();
+      termReq.setDepoProdId(req.getDepoProdId());
+      termReq.setDepoTermMonth(termMonth);
+      termReq.setDepoMinAmt(minAmt);
+      termReq.setDepoMaxAmt(maxAmt);
+
+      depoProdMapper.insertDepoProdTerm(termReq);
+
+      if (i > 0 && i % 100 == 0) {
         sqlSession.flushStatements();
       }
     }
