@@ -28,7 +28,7 @@ class DemandDepoProdMapperTest extends Dummy {
 
 
         //판매 여부
-        char[] sale = {'Y','N'};
+        String[] sale = {"Y","N"};
         int saleIdx = (int)(Math.random()*sale.length);
 
         //상품 이름

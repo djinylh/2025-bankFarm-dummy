@@ -16,5 +16,27 @@
         ,depo_sale_yn = #{depoSaleYn}
     </insert>
 
+    <insert id = "insertDepoProd" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoProdInsertReq"  useGeneratedKeys="true" keyProperty="depoProdId" keyColumn="depo_prod_id" >
+        INSERT INTO depo_prod
+        SET
+        depo_prod_nm  = #{depoProdNm},
+        depo_st_dt = #{depoStDt},
+        depo_ed_dt = #{depoEdDt},
+        depo_prod_tp = #{depoProdTp},
+        depo_prod_des = #{depoPodDes},
+        depo_intrst_calc_unit = #{depoIntrstCalcUnit},
+        depo_intrst_pay_cycle = #{depoIntrstPayCycle},
+        depo_intrst_calc_tp = #{depoIntrstCalcTp},
+        depo_sale_yn = #{depoSaleYn}
+    </insert>
+
+    <insert id = "insertDepoProdTerm" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.DepoProdTermReq">
+        INSERT INTO depo_prod_term
+        SET
+        depo_prod_id = #{depoProdId},
+        depo_term_month = #{depoTermMonth},
+        depo_min_amt = #{depoMinAmt},
+        depo_max_amt = #{depoMaxAmt}
+    </insert>
 
 </mapper>

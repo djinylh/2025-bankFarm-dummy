@@ -40,11 +40,14 @@ public class InsrContractMapperTest extends Dummy {
                 null // 직접 납부용
         };
 
+
+
+
         for (int i = 0; i < ADD_ROW_COUNT; i++) {
 
             Long prodId = prodIds.get(rnd.nextInt(prodIds.size()));
             Long empId = empIds.get(rnd.nextInt(empIds.size()));
-            Long custID =  custIds.get(rnd.nextInt(custIds.size()));
+            Long custId =  custIds.get(rnd.nextInt(custIds.size()));
 
             // 계약번호
             String contractNum = "IC" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + String.format("%06d", rnd.nextInt(1_000_000));
@@ -102,7 +105,7 @@ public class InsrContractMapperTest extends Dummy {
             InsrContractReq req = new InsrContractReq();
 
             req.setInsrProdId(prodId);
-            req.setCustId(custID);
+            req.setCustId(custId);
             req.setEmpId(empId);
             req.setInsrContractNum(contractNum);
             req.setInsrBankCd(bankCd);
@@ -118,7 +121,7 @@ public class InsrContractMapperTest extends Dummy {
 
             insrMapper.insrContractInsert(req);
 
-            if (i % 200 == 0) {
+            if (i > 0 && i % 200 == 0) {
                 sqlSession.flushStatements();
             }
         }
