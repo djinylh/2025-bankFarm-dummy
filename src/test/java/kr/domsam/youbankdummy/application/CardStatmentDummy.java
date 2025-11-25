@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -23,144 +21,52 @@ public class CardStatmentDummy extends Dummy {
 
     @Autowired
     UserCardRepository userCardRepository;
-
-    @Autowired
-    CardRepository cardRepository;
-
     @Autowired
     CreditCardStatementRepository cardStatementRepository;
     @Autowired
     CardInstallmentScheduleRepository cardInstallmentScheduleRepository;
 
-    @Autowired
-    CardBillingRepository cardBillingRepository;
-
     List<UserCard> userCardList;
-    List<Card> cardList;
     List<CreditCardStatement> crdCardStmList;
-    List<CardInstallmentSchedule> schedules;
-    List<CardBilling> cardBillingList;
+
 
     @BeforeAll
     void beforeAll() {
         userCardList = userCardRepository.findAll();
-        cardList = cardRepository.findAll();
         crdCardStmList = cardStatementRepository.findAll();
-        schedules = cardInstallmentScheduleRepository.findAll();
-        cardBillingList = cardBillingRepository.findAll();
+
     }
 
     @Test
     @Rollback(false)
     @Transactional
-    void insOneByOne() {
-
-//        new CheckCard();
-
-//        int count=0;
-//        for( UserCard uc: userCardList){
-//            if(uc.getCard().getCardTp()==0){
-//                insCrdCardStm(uc);
-//                insInstmSchd();
-//            }
-//            count++;
-//            if(count>=100){
-//                break;
-//            }
-//        }
-        insCardBillingGen();
-        insCardBilling();
-    }
-
-    void insCardBillingGen(){
-        for(CreditCardStatement cs : crdCardStmList){
-            Long cardUserId = cs.getUserCard().getCardUserId();
-            LocalDate billingYm2 = YearMonth.from(cs.getCardTrnsDt()).atDay(1);
-
-            Optional<CardBilling> existingBilling = cardBillingRepository
-                    .findByUserCard_CardUserIdAndCardBillingYearMonth(cardUserId, billingYm2);
-
-            CardBilling billing = existingBilling.orElseGet(() -> {
-
-                CardBilling newBilling = CardBilling.builder()
-                        .userCard(cs.getUserCard())
-                        .cardBillingYearMonth(billingYm2)
-                        .cardInstallmentAmt(0)
-                        .cardNewCharges(0)
-                        .cardTotalDue(0)
-                        .cardPaidAmt(0)
-                        .cardBillingSts(faker.options().option("CD026","CD027","CD028","CD029","CD030"))
-                        .cardDueDate(LocalDateTime.now().plusDays(20))
-                        .build();
-                return cardBillingRepository.save(newBilling);
-            });
-            if (cs.getCardInstallments() == 1) {  // 일시불만
-                billing.setCardNewCharges(billing.getCardNewCharges() + cs.getCardOgAmt());
-                billing.setCardTotalDue(billing.getCardTotalDue() + cs.getCardOgAmt());
-            }
-
-        }
-
-    }
-
-
-    @Transactional
-    void insCardBilling() {
-
-        Map<YearMonth, List<CardInstallmentSchedule>> grouped = schedules.stream()
-                .collect(Collectors.groupingBy(s -> YearMonth.from(s.getCardDueAt())));
-
-        for (YearMonth ym : grouped.keySet()) {
-            List<CardInstallmentSchedule> monthSchedules = grouped.get(ym);
-
-            for (CardInstallmentSchedule schedule : monthSchedules) {
-                long cardUserId = schedule.getCreditCardStatement()
-                        .getUserCard()
-                        .getCardUserId();
-
-                LocalDate billingYm = ym.atDay(1);
-
-                Optional<CardBilling> optBilling = cardBillingRepository
-                        .findByUserCard_CardUserIdAndCardBillingYearMonth(cardUserId, billingYm);
-
-                if (optBilling.isPresent()) {
-                    CardBilling billing = optBilling.get();
-                    boolean isBill = (billing.getCardBillingSts().equals("BILLED"));
-
-                    if (!isBill && schedule.getCardScheduleRefundYn().equals("N")) {
-                        // 3️⃣ 할부금 누적 반영
-                        billing.setCardInstallmentAmt(
-                                billing.getCardInstallmentAmt() + schedule.getCardInstallmentAmt()
-                        );
-
-                        billing.setCardTotalDue(
-                                billing.getCardNewCharges() + billing.getCardInstallmentAmt()
-                        );
-
-                        // 4️⃣ 청구 상태 변경
-                        billing.setCardBillingSts("BILLED");
-                    }
-                    //                cardBillingRepository.flush();
-                }
+    void insCardTrns() {
+        int SIZE = 100000; //1000개 사용자 카드중에
+        for (int i = 0; i < SIZE; i++) {
+            int randomIndex = (int) (Math.random() * userCardList.size());
+            UserCard uc = userCardList.get(randomIndex);
+            // 신용카드인 카드 명세서 발급(반 정도)
+            if (uc.getCard().getCardTp() == 0) {
+                insCrdCardStm(uc);
             }
         }
+        // 신용카드명세서들의 할부스케줄 생성
+        insInstmSchd();
     }
 
 
-
-
-
-    void insInstmSchd(){
-        for(CreditCardStatement cs:crdCardStmList){
-            int monthNo = cs.getCardInstallments();
-            if(cs.getCardCrdRefundYn().equals("N")) {
-                if (cardInstallmentScheduleRepository.existsByCreditCardStatement(cs)) continue;
-                for (int i = 1; i <= monthNo; i++) {
-                    CardInstallmentSchedule cis = generateCis(cs,i);
-                    cardInstallmentScheduleRepository.save(cis);
+    void insInstmSchd() {
+        Set<Long> existIds = cardInstallmentScheduleRepository
+                .findAllCreditCardStatementIds();
+        for(CreditCardStatement cs : crdCardStmList ) {
+            if (cs.getCardCrdRefundYn().equals("N") && !existIds.contains(cs.getCardCrdStatementId())) {
+                int monthNo = cs.getCardInstallments();
+                List<CardInstallmentSchedule> batch = new ArrayList<>();
+                for (int n = 1; n <= monthNo; n++) {
+                    batch.add(generateCis(cs, n));
                 }
+                cardInstallmentScheduleRepository.saveAll(batch);
             }
-
         }
         cardInstallmentScheduleRepository.flush();
     }
@@ -183,9 +89,11 @@ public class CardStatmentDummy extends Dummy {
     }
 
     void insCrdCardStm(UserCard uc) {
+        List<CreditCardStatement> statementList = new ArrayList<>();
 
-        CreditCardStatement crdCardStm = generateCrdCardStm(uc);
-        cardStatementRepository.save(crdCardStm);
+        CreditCardStatement cs = generateCrdCardStm(uc);
+        statementList.add(cs);
+        cardStatementRepository.saveAll(statementList);
         cardStatementRepository.flush();
     }
 
@@ -205,14 +113,11 @@ public class CardStatmentDummy extends Dummy {
     }
 
 
-
-
     private static LocalDateTime randomDatePast() {
         return LocalDateTime.now().minusDays(
                 ThreadLocalRandom.current().nextInt(30, 3000)
         );
     }
-
 
     private static LocalDateTime randomDateFuture() {
         return LocalDateTime.now().plusDays(

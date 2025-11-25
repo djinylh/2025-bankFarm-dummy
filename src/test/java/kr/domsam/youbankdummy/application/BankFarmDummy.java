@@ -6,9 +6,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -46,52 +48,49 @@ public class BankFarmDummy extends Dummy {
 
     @Test
     @Rollback(false)
-    void insOneByOne() {
+    void insCards() {
         int empIdx = 0;
-        int count = 0;
-        for(Customer2 c : customerList2) {
-
+        int SIZE = 10000;
+        List<UserCard> ucList = new ArrayList<>();
+        List<CheckCard> checkCardList = new ArrayList<>();
+        List<CreditCard> creditCardList = new ArrayList<>();
+        for(int i=0; i<SIZE;i++) {
+            int randomIndex = (int) (Math.random() * customerList2.size());
+            Customer2 c =  customerList2.get(randomIndex);
             Employees assignedEmp = employeeList.get(empIdx);
             Card assignedCard = cardList.get(faker.random().nextInt(cardList.size()));
             UserCard uc = generateUserCard(c,assignedCard,assignedEmp);
-            userCardRepository.save(uc);
+            ucList.add(uc);
             if(assignedCard.getCardTp()==1) {
-                insCreditCard(uc);
+                Account a = accountList.get(faker.random().nextInt(accountList.size()));
+                CheckCard checkCard = generateCheckCard(uc,a);
+                checkCardList.add(checkCard);
             }else if (assignedCard.getCardTp()==0){
-                insCheckCard(uc);
+                CreditCard creditCard = generateCreditCard(uc);
+                creditCardList.add(creditCard);
             }
+
             empIdx = (empIdx + 1) % employeeList.size();
 
-            count++;
-            if(count>=50000) break;
         }
+        userCardRepository.saveAll(ucList);
+        checkCardRepository.saveAll(checkCardList);
+        creditCardRepository.saveAll(creditCardList);
+
         userCardRepository.flush();
-    }
-
-
-    void insCheckCard(UserCard uc) {
-        Account a = accountList.get(faker.random().nextInt(accountList.size()));
-        CheckCard checkCard = generateCheckCard(uc,a);
-        checkCardRepository.save(checkCard);
-        checkCardRepository.flush();
     }
 
     CheckCard generateCheckCard(UserCard uc, Account a) {
         return CheckCard.builder()
-                .cardUserId(uc.getCardUserId())
+                .userCard(uc)
                 .account(a)
                 .build();
     }
 
-    void insCreditCard(UserCard uc) {
-        CreditCard creditCard = generateCreditCard(uc);
-        creditCardRepository.save(creditCard);
-        creditCardRepository.flush();
-    }
 
     CreditCard generateCreditCard(UserCard uc) {
         return CreditCard.builder()
-                .cardUserId(uc.getCardUserId())
+                .userCard(uc)
                 .cardAcctId(generateAccountNo())
                 .cardDueDay(generateDueDay())
                 .cardBankCode(faker.options().option("BK001","BK002","BK003","BK004","BK005",
