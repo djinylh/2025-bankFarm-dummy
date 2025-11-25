@@ -11,10 +11,7 @@ import java.util.Locale;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class JpaDummy {
-    @Autowired
 
-    protected SqlSessionFactory sqlSessionFactory;
-
-    protected Faker kofaker = new Faker(new Locale("ko")); //한국어
-    protected Faker enfaker = new Faker(new Locale("en")); //영어
+    public static final Faker kofaker = new Faker(new Locale("ko")); //한국어
+    public static final Faker faker = new Faker(new Locale("en")); //영어
 }

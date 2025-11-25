@@ -20,6 +20,7 @@ public class CheckCard {
      * user_card 테이블의 외래키
      */
     @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     @JoinColumn(name = "card_user_id", referencedColumnName = "card_user_id",
             foreignKey = @ForeignKey(name = "fk_check_card_user"))
     private UserCard userCard;
