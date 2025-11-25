@@ -1,6 +1,6 @@
-package kr.domsam.youbankdummy.application;
+package com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card;
 
-import kr.domsam.youbankdummy.entity.CreditCard;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.CreditCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CreditCardRepository extends JpaRepository<CreditCard, String> {

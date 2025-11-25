@@ -1,4 +1,4 @@
-package kr.domsam.youbankdummy.entity;
+package com.bankfarm_dummy.bankfarm_dummy.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

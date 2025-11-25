@@ -1,7 +1,8 @@
 package kr.domsam.youbankdummy.application;
 
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.*;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card.*;
 import kr.domsam.youbankdummy.Dummy;
-import kr.domsam.youbankdummy.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

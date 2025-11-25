@@ -1,9 +1,11 @@
 package kr.domsam.youbankdummy.application;
 
 
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.account.BankAccountRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.customer.CustomerRepository;
 import kr.domsam.youbankdummy.Dummy;
-import kr.domsam.youbankdummy.entity.BankAccount;
-import kr.domsam.youbankdummy.entity.Customer;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.BankAccount;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.Customer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,8 +21,10 @@ import java.util.concurrent.ThreadLocalRandom;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BankAccountDummy extends Dummy {
 
-    @Autowired CustomerRepository customerRepository;
-    @Autowired BankAccountRepository bankAccountRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
+    BankAccountRepository bankAccountRepository;
     List<Customer> customerList;
 
     @BeforeAll

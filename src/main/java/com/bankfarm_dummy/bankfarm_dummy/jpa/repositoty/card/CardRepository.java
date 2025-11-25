@@ -1,6 +1,6 @@
-package kr.domsam.youbankdummy.application;
+package com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card;
 
-import kr.domsam.youbankdummy.entity.Card;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
