@@ -1,7 +1,14 @@
 package kr.domsam.youbankdummy.application;
 
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.*;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.account.AccountRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card.CardRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card.CheckCardRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card.CreditCardRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card.UserCardRepository;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.customer.CustomerRepository2;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.employees.EmployeesRepository;
 import kr.domsam.youbankdummy.Dummy;
-import kr.domsam.youbankdummy.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

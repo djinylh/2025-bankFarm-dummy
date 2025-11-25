@@ -1,7 +1,7 @@
-package kr.domsam.youbankdummy.application;
+package com.bankfarm_dummy.bankfarm_dummy.jpa.repositoty.card;
 
-import kr.domsam.youbankdummy.entity.CardInstallmentSchedule;
-import kr.domsam.youbankdummy.entity.CreditCardStatement;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.CardInstallmentSchedule;
+import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.CreditCardStatement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
