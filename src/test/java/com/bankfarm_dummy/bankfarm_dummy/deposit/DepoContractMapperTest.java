@@ -5,24 +5,23 @@ import com.bankfarm_dummy.bankfarm_dummy.account.AccountInsertReq;
 import com.bankfarm_dummy.bankfarm_dummy.account.AccountMapper;
 import com.bankfarm_dummy.bankfarm_dummy.account.model.AccountFindAcctNumReq;
 import com.bankfarm_dummy.bankfarm_dummy.account.model.AccountFindAcctNumRes;
-import com.bankfarm_dummy.bankfarm_dummy.account.model.GetDemandProdRes;
 import com.bankfarm_dummy.bankfarm_dummy.branch.BranchMapper;
-import com.bankfarm_dummy.bankfarm_dummy.branch.model.GetBranchByEmpRes;
-import com.bankfarm_dummy.bankfarm_dummy.depo.DepoProdSelectRes;
+import com.bankfarm_dummy.bankfarm_dummy.depo.*;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractInsertReq;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractMapper;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoProdMapper;
 import com.bankfarm_dummy.bankfarm_dummy.prod_document.ProdDocumentMapper;
-import com.bankfarm_dummy.bankfarm_dummy.prod_document.model.ProdDocumentReq;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DepoContractMapperTest extends Dummy {
   final int ADD_ROW_COUNT = 300;
@@ -38,16 +37,17 @@ public class DepoContractMapperTest extends Dummy {
     for (int i = 0; i < ADD_ROW_COUNT; i++) {
       Random random = new Random();
 
-      // fk로 쓸 아이디 리스트
+      // fk로 쓸 리스트
       List<Long> custIds = depoContractMapper.selectCustomerIds();
       List<Long> empIds = depoContractMapper.selectEmployeeIds();
       List<DepoProdSelectRes> prodIds = depoContractMapper.selectDepoProds();
 
-      // 랜덤으로 뽑은 fk 아이디
+      // 랜덤으로 뽑은 fk 아이디, 상품 정보
       Long custId =  custIds.get(random.nextInt(custIds.size()));
       Long empId = empIds.get(random.nextInt(empIds.size()));
       DepoProdSelectRes prod = prodIds.get(random.nextInt(prodIds.size()));
 
+      // 1. 계좌 생성
       // 계좌 번호 생성
       String finalAcctNum = accountNum();
 
@@ -83,19 +83,17 @@ public class DepoContractMapperTest extends Dummy {
       accountReq.setAcctCrtAt(randomDateTime);
       accountReq.setAcctIsDedYn('N');
 
-      // 계좌 생성
       accountMapper.accountInsert(accountReq);
 
+      sqlSession.flushStatements();
+
+      // 2. 계약 공통 데이터 생성
       // 만기 일자
       LocalDate maturityDate = randomDate.plusMonths(prod.getDepoTermMonth());
 
       // 지급 방식
       String[] payoutCodes = {"DO031", "DO032", "DO032", "DO032", "DO032"};
       String payoutTp = payoutCodes[(int)(Math.random() * payoutCodes.length)];
-
-
-
-
 
       // 지급 방식이 계좌 이체일 시 지급 은행, 계좌 번호 생성
       String payoutAcctNum = null;
@@ -112,6 +110,11 @@ public class DepoContractMapperTest extends Dummy {
         payoutBank = bankCodes[(int)(Math.random() * bankCodes.length)];
       }
 
+      // 적용 금리(기본금리 ~ 기본금리 + 우대 금리)
+      BigDecimal maxRate = depoContractMapper.selectProdTotalRate(prod.getDepoProdId());
+      BigDecimal minRate = new BigDecimal("1.8500");
+
+      BigDecimal randomRate = randomDecimal(minRate, maxRate);
 
       DepoContractInsertReq depoReq = new DepoContractInsertReq();
       depoReq.setCustId(custId);
@@ -120,39 +123,107 @@ public class DepoContractMapperTest extends Dummy {
       depoReq.setEmpId(empId);
       depoReq.setDepoContractDt(randomDate);
       depoReq.setDepoMaturityDt(maturityDate);
-//      depoReq.setDepoAppliedIntrstRt();
+      depoReq.setDepoAppliedIntrstRt(randomRate);
       depoReq.setDepoActiveCd("CS001");
       depoReq.setDepoPayoutBankCd(payoutBank);
       depoReq.setDepoPayoutAcctNum(payoutAcctNum);
       depoReq.setDepoPayoutTp(payoutTp);
-    }
+
+      depoContractMapper.depoContractInsert(depoReq);
 
       sqlSession.flushStatements();
 
+      // 3. 계약 상세 데이터 / 정기적금 납입 스케줄 생성
+      int minAmt = prod.getDepoMinAmt();
+      int maxAmt = 0;
+      Long randomAmt = null;
 
+      if(prod.getDepoProdTp().equals("DO002")){
+        maxAmt = 1000000000;
+        randomAmt = ThreadLocalRandom.current().nextLong(minAmt, maxAmt + 1);
 
-      // 상품 계약 테이블 이동
-//      GetBranchByEmpRes empRes = branchMapper.getBranchIdByEmpId(empId);
-//      long branchId = empRes.getBranId();
-//
-//
-//      ProdDocumentReq prodReq = new ProdDocumentReq();
-//      prodReq.setBranId(branchId);
-//      prodReq.setDocProdTp("PD006");
-//      prodReq.setDocNm("요구불 계좌 문서 이름");
-//      prodReq.setDocProdId(contReq.getDepoContractId());
-//      prodDocumentMapper.prodDocumentJoin(prodReq);
-//
-//      sqlSession.flushStatements();
-//
-//    }
-//    sqlSession.commit();
-//    sqlSession.close();
+      DepoContractDeposit depositReq = new DepoContractDeposit();
+      depositReq.setDepoContractId(depoReq.getDepoContractId());
+      depositReq.setDepoPrncpAmt(randomAmt);
 
+      }else if(prod.getDepoProdTp().equals("DO003")){
+        maxAmt = prod.getDepoMaxAmt();
+        randomAmt = ThreadLocalRandom.current().nextLong(minAmt, maxAmt + 1);
 
+        // 납입일(1~28)
+        byte paymentDay = (byte) (1 + random.nextInt(28));
+
+        DepoContractSavings savingsReq = new DepoContractSavings();
+        savingsReq.setDepoContractId(depoReq.getDepoContractId());
+        savingsReq.setDepoPaymentDay(paymentDay);
+        savingsReq.setDepoMonthlyAmt(randomAmt);
+
+        // 정기적금 납입 내역 데이터
+        LocalDate today = LocalDate.now();
+        int seq = 1;
+        while(!randomDate.isAfter(today)){
+          randomDate = randomDate.plusMonths(seq);
+
+          DepoSavingsPaymentReq savingsPaymentReq = new DepoSavingsPaymentReq();
+          savingsPaymentReq.setDepoContractId(depoReq.getDepoContractId());
+          savingsPaymentReq.setDepoPaidDt(randomDate);
+          savingsPaymentReq.setDepoPaidAmt(randomAmt);
+          savingsPaymentReq.setDepoPaymentYn("Y");
+
+          depoContractMapper.insertDepoSavingsPayment(savingsPaymentReq);
+
+          seq++;
+        }
+
+        sqlSession.flushStatements();
+      }else if(prod.getDepoProdTp().equals("DO004")){
+        maxAmt = prod.getDepoMaxAmt();
+      }
+
+    }
   }
 
+  // 상품 금리 테이블 더미데이터
+  @Test
+  void insertDepoProdRate(){
+    SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
 
+    DepoContractMapper depoContractMapper = sqlSession.getMapper(DepoContractMapper.class);
+
+    // 금리 적용할 예적금 상품 아이디 리스트 가져오기
+    List<Long> prodIds = depoContractMapper.selectDepoProdIds();
+
+    // 우대금리 아이디 리스트 가져오기
+    List<Long> rateIds = depoContractMapper.selectRateRule();
+
+    Random random = new Random();
+    DepoProdRateReq depoProdRateReq = new DepoProdRateReq();
+
+    for(int i=0;i<prodIds.size();i++){
+      // 반복문 돌 때 마다 인덱스 순으로 순차 id뽑기
+      Long prodId = prodIds.get(i);
+      // 적용할 우대 금리 갯수 뽑기
+      int repeatNum = random.nextInt(5) + 3;
+      // 금리 아이디 배열 복사 후 섞기
+      List<Long> result = new ArrayList<>(rateIds);
+      Collections.shuffle(result);
+      // 우대금리 갯수만큼 배열 자르기(랜덤 아이디 생성과 같은 방식)
+      List<Long> picked = result.stream()
+          .limit(repeatNum)
+          .toList();
+
+      for(int k = 0; k < picked.size(); k++){
+        Long pickedId = picked.get(k);
+        depoProdRateReq.setProdId(prodId);
+        depoProdRateReq.setProdTp("RT006");
+        depoProdRateReq.setProdRtId(pickedId);
+
+        depoContractMapper.insertDepoProdRate(depoProdRateReq);
+      }
+    }
+    sqlSession.commit();
+    sqlSession.close();
+  }
   private String accountNum(){
     SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
 
@@ -180,5 +251,20 @@ public class DepoContractMapperTest extends Dummy {
 
 
 
+  }
+  // 랜덤 우대금리 만들기
+  private BigDecimal randomDecimal(BigDecimal min, BigDecimal max) {
+    Random random = new Random();
+
+    // 0 이상 1 미만 난수
+    double randomDouble = random.nextDouble();
+
+    // (max - min) * 난수 + min
+    BigDecimal result = max.subtract(min)
+        .multiply(BigDecimal.valueOf(randomDouble))
+        .add(min);
+
+    // DECIMAL(6,4)에 맞게 소수점 4자리 고정
+    return result.setScale(4, RoundingMode.HALF_UP);
   }
 }
