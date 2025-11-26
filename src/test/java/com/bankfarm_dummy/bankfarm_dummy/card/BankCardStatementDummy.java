@@ -8,6 +8,8 @@ import com.bankfarm_dummy.bankfarm_dummy.jpa.entity.UserCard;
 import com.bankfarm_dummy.bankfarm_dummy.jpa.repository.card.CardInstallmentScheduleRepository;
 import com.bankfarm_dummy.bankfarm_dummy.jpa.repository.card.CreditCardStatementRepository;
 import com.bankfarm_dummy.bankfarm_dummy.jpa.repository.card.UserCardRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -34,6 +36,8 @@ public class BankCardStatementDummy extends JpaDummy {
     List<UserCard> userCardList;
     List<CreditCardStatement> crdCardStmList;
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @BeforeAll
     void beforeAll() {
@@ -76,17 +80,41 @@ public class BankCardStatementDummy extends JpaDummy {
     void insInstmSchd() {
         Set<Long> existIds = cardInstallmentScheduleRepository
                 .findAllCreditCardStatementIds();
-        for(CreditCardStatement cs : crdCardStmList ) {
+
+        int total = crdCardStmList.size();
+        int processed = 0;
+        int BATCH_SIZE = 1000;
+        for(int i=50001;i<=100000;i++ ) {
+            CreditCardStatement cs = crdCardStmList.get(i);
             if (cs.getCardCrdRefundYn().equals("N") && !existIds.contains(cs.getCardCrdStatementId())) {
-                int monthNo = cs.getCardInstallments();
-                List<CardInstallmentSchedule> batch = new ArrayList<>();
-                for (int n = 1; n <= monthNo; n++) {
-                    batch.add(generateCis(cs, n));
+                if(cs.getCardInstallments()!=1) {
+                    int monthNo = cs.getCardInstallments();
+                    List<CardInstallmentSchedule> batch = new ArrayList<>();
+                    for (int n = 1; n <= monthNo; n++) {
+                        batch.add(generateCis(cs, n));
+                    }
+                    cardInstallmentScheduleRepository.saveAll(batch);
                 }
-                cardInstallmentScheduleRepository.saveAll(batch);
             }
+            processed++;
+            printProgress(processed, total); // ✅ 진행률 표시
+            if (processed % 100 == 0) {      // 💾 메모리 절약용 flush
+                cardInstallmentScheduleRepository.flush();
+            }
+            if (processed > 0 && processed % BATCH_SIZE == 0) {
+                cardInstallmentScheduleRepository.flush();
+                entityManager.clear(); // 엔티티 캐시 제거
+            }
+
         }
         cardInstallmentScheduleRepository.flush();
+    }
+
+    private void printProgress(int current, int total) {
+        int percent = (current * 100) / total;
+        int barCount = percent / 2; // 50칸짜리 바
+        String bar = "=".repeat(barCount) + " ".repeat(50 - barCount);
+        System.out.printf("\r[%s] %3d%% (%d/%d)", bar, percent, current, total);
     }
 
     CardInstallmentSchedule generateCis(CreditCardStatement cs,int n){
