@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.LoanProdMapper">
+
+     <insert id="loanProdInsert">
+         INSERT INTO loan_product
+         SET loan_prod_nm = #{loanProdNm}
+         ,  loan_des = #{loanDes}
+         ,  loan_max_amt = #{loanMaxAmt}
+         ,  loan_rpmt_tp = #{loanRpmtTp}
+         ,  loan_term_mo = #{loanTermMo}
+         ,  loan_st_dt = #{loanStDt}
+         ,  loan_ed_dt = #{loanEdDt}
+         ,  loan_sts_yn = #{loanStsYn}
+     </insert>
+
+    <select id="loanProdGetAmt">
+        SELECT loan_max_amt, loan_term_mo
+        FROM loan_product
+        WHERE loan_prod_id = #{loanProdId}
+    </select>
+
+
+</mapper>
