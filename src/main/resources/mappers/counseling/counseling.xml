@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.counseling.CounselingMapper">
 
-    <insert id="counselingJoin" parameterType="com.bankfarm_dummy.bankfarm_dummy.counseling.CounselingMapper">
+    <insert id="counselingJoin" parameterType="com.bankfarm_dummy.bankfarm_dummy.counseling.model.CounselingReq">
         INSERT INTO counseling
         SET coun_id = #{counId}
         ,   emp_id = #{empId}
@@ -12,6 +12,19 @@
         ,   coun_tp_cd = #{counTpCd}
         ,   coun_crt_at = #{counCrtAt}
     </insert>
+
+   <select id="getCustId" resultType="long">
+       SELECT cust_id
+       FROM customer
+   </select>
+
+    <select id="getEmpId" resultType="long">
+        SELECT emp_id
+        FROM employees
+
+
+    </select>
+
 
 
 
