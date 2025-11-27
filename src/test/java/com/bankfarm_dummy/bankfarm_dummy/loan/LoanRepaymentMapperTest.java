@@ -23,7 +23,7 @@ class LoanRepaymentMapperTest extends Dummy {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
         LoanRepaymentMapper mapper = sqlSession.getMapper(LoanRepaymentMapper.class);
 
-        for(int i=30001;i<=40000;i++){
+        for(int i=50001;i<=100000;i++){
         GetLoanInfoRes loanInfoRes = mapper.GetLoanInfoByLoanId(i);
         for(int k= 1; k<= loanInfoRes.getLoanReqTrm();k++){
             // 상환일
