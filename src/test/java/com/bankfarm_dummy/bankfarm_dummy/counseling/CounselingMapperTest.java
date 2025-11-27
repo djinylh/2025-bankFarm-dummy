@@ -62,7 +62,7 @@ class CounselingMapperTest extends Dummy {
             counselingReq.setCounContent(kofaker.lorem().sentence());
 
             // 상담 유형 코드
-            String[] types = {"CO001", "CO002", "CO003", "CO004", "CO005",
+            String[] types = {"CO001", "CO002", "CO003", "CO004", "CO005","CO006",
                                "C0007",  "C0008", "C0009", "C0010", "C0011",
                                 "C0012",
             };
