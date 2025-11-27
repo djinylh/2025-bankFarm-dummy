@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 class CounselingMapperTest extends Dummy {
-    final int ADD_ROW_COUNT = 30;
+    final int ADD_ROW_COUNT = 100;
 
     @Test
     void join(){
@@ -63,8 +63,8 @@ class CounselingMapperTest extends Dummy {
 
             // 상담 유형 코드
             String[] types = {"CO001", "CO002", "CO003", "CO004", "CO005","CO006",
-                               "C0007",  "C0008", "C0009", "C0010", "C0011",
-                                "C0012",
+                               "CO007",  "CO008", "CO009", "CO010", "CO011",
+                                "CO012",
             };
             int idx = (int)(Math.random() * types.length);
             counselingReq.setCounTpCd(types[idx]);
