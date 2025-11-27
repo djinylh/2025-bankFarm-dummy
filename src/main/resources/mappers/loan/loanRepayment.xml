@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.LoanRepaymentMapper">
+
+    <insert id="loanRepaymentInsert">
+        INSERT INTO loan_repayment
+        SET loan_id = #{loanId}
+        ,   loan_rpmt_due = #{loanRpmtDue}
+        ,   loan_rpmt_prncp = #{loanRpmtPrncp}
+        ,   loan_rpmt_intrst = #{loanRpmtIntrst}
+        ,   loan_due_dt = #{loanDueDt}
+        ,   loan_due_sts = #{loanDueSts}
+    </insert>
+
+    <select id="GetLoanInfoByLoanId">
+        SELECT l.loan_id, la.loan_dcsn_dt, la.loan_req_amt, la.loan_req_trm, l.loan_fn_intrst
+        FROM loan l
+        JOIN loan_application la
+        ON l.loan_app_id = la.loan_app_id
+        WHERE l.loan_id = #{loanId}
+    </select>
+
+</mapper>
