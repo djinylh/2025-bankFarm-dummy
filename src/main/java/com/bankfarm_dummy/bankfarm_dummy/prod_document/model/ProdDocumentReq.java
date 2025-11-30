@@ -3,6 +3,8 @@ package com.bankfarm_dummy.bankfarm_dummy.prod_document.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ProdDocumentReq {
@@ -10,4 +12,5 @@ public class ProdDocumentReq {
     private String docProdTp;
     private long docProdId;
     private String docNm;
+    private LocalDateTime docCrtAt;
 }

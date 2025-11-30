@@ -20,4 +20,6 @@ public interface InsuranceMapper {
     List<InsrContractRes> selectAllContracts();
 
     List<InsrContractRes> selectExpiredContracts();
+
+    List<InsrProdDocRes> selectInsrContractIdAndBranId();
 }

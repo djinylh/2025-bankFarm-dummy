@@ -100,4 +100,12 @@
         FROM insr_contract
         WHERE insr_active_cd IN ('CS002', 'CS003', 'CS004')
     </select>
+
+<!--    계약서 보관 테이블에 넣을 계약 아이디, 지점 아이디 가져오기-->
+    <select id="selectInsrContractIdAndBranId" resultType="com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrProdDocRes">
+        SELECT i.insr_contract_id, i.insr_contract_dt, e.bran_id
+        FROM insr_contract i
+        JOIN employees e
+        ON i.emp_id = e.emp_id
+    </select>
 </mapper>

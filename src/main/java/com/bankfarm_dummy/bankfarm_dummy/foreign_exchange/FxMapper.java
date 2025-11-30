@@ -10,4 +10,6 @@ public interface FxMapper {
     int insertFxRateHistory(FxRtHistoryReq fxRtHistoryReq);
 
     List<String> selectActiveCurrencies();
+
+    Long selectLatestFxRateByCurrencyAndDate(String currencyId, Loca);
 }

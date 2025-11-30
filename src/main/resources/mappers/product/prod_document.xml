@@ -8,6 +8,7 @@
         ,doc_prod_tp = #{docProdTp}
         ,doc_prod_id = #{docProdId}
         ,doc_nm = #{docNm}
+        ,doc_crt_at = #{docCrtAt}
     </insert>
 
 

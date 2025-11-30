@@ -1,7 +1,11 @@
 package com.bankfarm_dummy.bankfarm_dummy.insurance;
 
 import com.bankfarm_dummy.bankfarm_dummy.Dummy;
+import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractMapper;
 import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrContractReq;
+import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrProdDocRes;
+import com.bankfarm_dummy.bankfarm_dummy.prod_document.ProdDocumentMapper;
+import com.bankfarm_dummy.bankfarm_dummy.prod_document.model.ProdDocumentReq;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -10,6 +14,7 @@ import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -129,5 +134,26 @@ public class InsrContractMapperTest extends Dummy {
         sqlSession.commit();
         sqlSession.close();
 
+    }
+
+    @Test
+    void insertProdDoc() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        InsuranceMapper insuranceMapper = sqlSession.getMapper(InsuranceMapper.class);
+        ProdDocumentMapper prodDocumentMapper = sqlSession.getMapper(ProdDocumentMapper.class);
+
+        List<InsrProdDocRes> prodDocResList = insuranceMapper.selectInsrContractIdAndBranId();
+
+        for (InsrProdDocRes prodDocRes : prodDocResList) {
+
+            ProdDocumentReq documentReq = new ProdDocumentReq();
+            documentReq.setBranId(prodDocRes.getBranId());
+            documentReq.setDocNm("보험 계약 문서 제목");
+            documentReq.setDocProdTp("PD009");
+            documentReq.setDocProdId(prodDocRes.getContractId());
+            documentReq.setDocCrtAt(prodDocRes.getContractDate());
+
+            prodDocumentMapper.prodDocumentJoin(documentReq);
+        }
     }
 }

@@ -54,4 +54,14 @@
         AND r.fx_rt_id       = latest.max_rt_id
         WHERE c.fx_active_yn = 'Y'
     </select>
+
+<!--    거래 당시의 최신 환율 정보 가져오기-->
+    <select id="selectLatestFxRateByCurrencyAndDate">
+        SELECT fx_rt_id
+        FROM fx_rt_history
+        WHERE fx_currency_id = #{currencyId}
+        AND fx_crt_at <= #{baseDateTime}
+        ORDER BY fx_crt_at DESC
+        LIMIT 1
+    </select>
 </mapper>
