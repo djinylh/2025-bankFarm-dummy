@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DepoContractMapperTest extends Dummy {
-  final int ADD_ROW_COUNT = 1000;
+  final int ADD_ROW_COUNT = 20_000;
   final int CHUNK_SIZE   = 1_000;  // 1,000건마다 중간 commit
 
   @Test
@@ -62,6 +62,10 @@ public class DepoContractMapperTest extends Dummy {
       // 현재 날짜
       LocalDate today = LocalDate.now();
 
+      // 비밀번호 암호화
+      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      String password = passwordEncoder.encode("1234");
+
       for (int i = 0; i < ADD_ROW_COUNT; i++) {
 
         // CHUNK_SIZE마다 한 번씩 중간 commit으로 트랜잭션/로그 부담 줄이기
@@ -78,11 +82,6 @@ public class DepoContractMapperTest extends Dummy {
         // 1. 계좌 생성
         // 계좌 번호 생성
         String finalAcctNum = accountNum(accountMapper);
-
-        // 비밀번호 암호화
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode("1234");
-
 
         // 생성 일시(예적금 상품의 판매 시작일 ~ 종료일 사이의 날짜로)
         LocalDateTime start = LocalDateTime.of(prod.getDepoStartDt().getYear(), prod.getDepoStartDt().getMonth(), prod.getDepoStartDt().getDayOfMonth(), 0, 0, 0);

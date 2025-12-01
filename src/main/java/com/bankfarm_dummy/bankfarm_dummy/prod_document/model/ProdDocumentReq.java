@@ -14,5 +14,5 @@ public class ProdDocumentReq {
     private String docProdTp;
     private long docProdId;
     private String docNm;
-    private LocalDate docCrtAt;
+    private LocalDateTime docCrtAt;
 }

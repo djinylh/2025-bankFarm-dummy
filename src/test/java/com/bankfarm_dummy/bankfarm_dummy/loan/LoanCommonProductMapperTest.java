@@ -40,7 +40,7 @@ class LoanCommonProductMapperTest extends Dummy {
             req.setDocProdId(productDesRes.getLoanAppId());
             req.setDocProdTp("PD007");
             req.setDocNm("대출 계약 문서 이름");
-            req.setDocCrtAt(productDesRes.getLoanDcsnDt());
+//            req.setDocCrtAt(productDesRes.getLoanDcsnDt());
 
             prodDocumentMapper.prodDocumentJoin(req);
 
