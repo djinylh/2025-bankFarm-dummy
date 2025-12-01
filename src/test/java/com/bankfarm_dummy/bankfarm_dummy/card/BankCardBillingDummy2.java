@@ -47,7 +47,7 @@ public class BankCardBillingDummy2 extends JpaDummy {
     @Rollback(false)
     void run() {
         insBillingPaged();    //
-        bulkUpdateBilling();  //
+//        bulkUpdateBilling();  //
     }
 
     private LocalDateTime calculateDueDate(LocalDate billingYm) {
@@ -103,6 +103,23 @@ public class BankCardBillingDummy2 extends JpaDummy {
                             .cardDueDate(calculateDueDate(billingYm))
                             .build();
                     newBillings.add(billing);
+                }else{
+                    CardBilling billing = existing.get();
+
+                    if (cs.getCardInstallments() == 1) {
+                        billing.setCardNewCharges(billing.getCardNewCharges() + cs.getCardOgAmt());
+                        billing.setCardTotalDue(billing.getCardTotalDue() + cs.getCardOgAmt());
+                    } else {
+                        billing.setCardInstallmentAmt(billing.getCardInstallmentAmt() + cs.getCardOgAmt());
+                        billing.setCardTotalDue(billing.getCardTotalDue() + cs.getCardOgAmt());
+                    }
+
+                    // 상태 및 납부기한은 그대로 두거나 갱신
+                    billing.setCardBillingSts("CD026");
+                    billing.setCardDueDate(calculateDueDate(billingYm));
+
+                    // ✅ save()로 갱신
+                    cardBillingRepository.save(billing);
                 }
 
                 if ((globalIndex - start + 1) % 100 == 0 && globalIndex >= start && globalIndex <= end) {
