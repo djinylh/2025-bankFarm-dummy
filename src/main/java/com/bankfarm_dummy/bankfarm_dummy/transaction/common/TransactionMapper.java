@@ -13,4 +13,6 @@ public interface TransactionMapper {
     // 입출금 기록이 없는 계좌 리스트
     List<GetFirstAcctBalInsertRes> firstTransaction();
 
+    // 예적금 용 insert
+    int insertTransaction(TransactionInsertGeq req);
 }

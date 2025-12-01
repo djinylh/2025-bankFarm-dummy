@@ -21,6 +21,16 @@
         WHERE t.`acct_id` IS NULL
         LIMIT 10000
     </select>
-
+    <insert id="insertTransaction">
+        INSERT INTO transaction
+        SET acct_id = #{acctId}
+        ,   trns_fee_id = #{trnsFeeId}
+        ,   trns_amt = #{trnsAmt}
+        ,   trns_acct_num = #{trnsAcctNum}
+        ,   trns_bal = #{trnsBal}
+        ,   trns_tp = #{trnsTp}
+        ,   trns_des = #{trnsDes}
+        ,   trns_crt_at = #{trnsCrtAt}
+    </insert>
 
 </mapper>

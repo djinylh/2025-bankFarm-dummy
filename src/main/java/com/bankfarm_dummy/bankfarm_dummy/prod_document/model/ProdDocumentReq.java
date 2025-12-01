@@ -3,6 +3,8 @@ package com.bankfarm_dummy.bankfarm_dummy.prod_document.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 import java.time.LocalDate;
 
 @Getter
