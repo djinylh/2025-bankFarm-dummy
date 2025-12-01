@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.LoanAppMapper">
+
+    <insert id="loanAppInsert">
+        INSERT INTO loan_application
+        SET cust_id = #{custId}
+        ,   loan_prod_id = #{loanProdId}
+        ,   emp_id = #{empId}
+        ,   loan_req_amt = #{loanReqAmt}
+        ,   loan_req_trm = #{loanReqTrm}
+        ,   loan_app_sts_cd = #{loanAppStsCd}
+        ,   loan_rjct_rsn = #{loanRjctRsn}
+        ,   loan_app_dt = #{loanAppDt}
+        ,   loan_dcsn_dt = #{loanDcsnDt}
+    </insert>
+
+    <select id="loanAppByCd002">
+        SELECT loan_app_id, loan_req_amt, loan_req_trm, loan_dcsn_dt
+        FROM loan_application
+        WHERE loan_app_sts_cd = 'AP002'
+        ORDER BY loan_dcsn_dt
+    </select>
+
+</mapper>

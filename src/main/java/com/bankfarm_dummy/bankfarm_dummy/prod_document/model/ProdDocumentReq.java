@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class ProdDocumentReq {
@@ -12,5 +14,5 @@ public class ProdDocumentReq {
     private String docProdTp;
     private long docProdId;
     private String docNm;
-    private LocalDateTime docCrtAt;
+    private LocalDate docCrtAt;
 }

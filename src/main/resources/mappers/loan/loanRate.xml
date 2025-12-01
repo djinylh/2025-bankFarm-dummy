@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.rate.ProdRateMapper">
+
+    <insert id="prodRateInsert">
+        INSERT INTO prod_rate
+        SET prod_tp = #{prodTp}
+        ,   prod_id = #{prodId}
+        ,   prod_rt_id = #{prodRtId}
+    </insert>
+
+</mapper>

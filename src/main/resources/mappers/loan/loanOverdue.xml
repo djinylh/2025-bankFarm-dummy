@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.LoanOverdueMapper">
+
+    <insert id="loanOverdueInsert">
+        INSERT INTO loan_overdue
+        SET loan_rpmt_id = #{loanRpmtId}
+        ,loan_id = #{loanId}
+        ,loan_od_due_sts = #{loanOdDueSts}
+        ,loan_od_amt = #{loanOdAmt}
+        ,loan_od_st_dt = #{loanOdStDt}
+        ,loan_od_ed_dt = #{loanOdEdDt}
+        ,loan_od_intrst = #{loanOdIntrst}
+        ,loan_od_fn_amt = #{loanOdFnAmt}
+        ,loan_od_month = #{loanOdMonth}
+    </insert>
+
+</mapper>

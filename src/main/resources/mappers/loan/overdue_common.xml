@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.overdue_common.LoanOverdueCommonMapper">
+
+    <insert id="overdueCommonInsert">
+        INSERT INTO overdue_history
+        SET cust_id = #{custId}
+        ,   od_source_id = #{odSourceId}
+        ,   od_tp = #{odTp}
+        ,   od_st_dt = #{odStDt}
+        ,   od_amt = #{odAmt}
+    </insert>
+
+    <select id="getLoanOverdueList">
+        SELECT a.loan_rpmt_id, a.loan_od_fn_amt, a.loan_od_st_dt, b.cust_id, b.emp_id
+        FROM (
+        SELECT lo.loan_id, lo.loan_rpmt_id, lo.loan_od_fn_amt, lo.loan_od_st_dt
+        FROM loan_overdue lo
+        ) AS a
+        LEFT JOIN (
+        SELECT l.loan_id, la.cust_id, la.emp_id
+        FROM loan_application la
+        LEFT JOIN loan l
+        ON la.loan_app_id = l.loan_app_id
+        ) AS b
+        ON a.loan_id = b.loan_id
+    </select>
+
+    <select id="getBranchIdByEmpId">
+        SELECT b.bran_id
+        FROM branch b
+        LEFT JOIN employees e
+        ON b.bran_id = e.bran_id
+        WHERE e.emp_id = #{empId}
+    </select>
+
+</mapper>

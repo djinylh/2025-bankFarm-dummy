@@ -11,4 +11,9 @@ public interface CounselingMapper {
     // 상담 등록
     int counselingJoin(CounselingReq counselingReq);
 
+    // 고객아이디 조회
+    List<Long> getCustId();
+
+    // 직원아이디 조회
+    List<Long> getEmpId();
 }

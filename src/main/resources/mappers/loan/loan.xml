@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.loan.LoanMapper">
+
+    <insert id="loanInsert">
+        INSERT INTO loan
+        SET loan_app_id = #{loanAppId}
+        ,   loan_num = #{loanNum}
+        ,   loan_bnk_cd = #{loanBnkCd}
+        ,   loan_fn_intrst = #{loanFnIntrst}
+        ,   loan_ed_dt = #{loanEdDt}
+        ,   loan_fn_rpmt_tp = #{loanFnRpmtTp}
+        ,   loan_use_acct = #{loanUseAcct}
+        ,   loan_use_bnk_cd = #{loanUseBnkCd}
+        ,   loan_due_sts = #{loanDueSts}
+    </insert>
+
+    <select id="getLoanProductDesList">
+        SELECT la.emp_id, la.loan_dcsn_dt, la.loan_app_id
+        FROM loan l
+        LEFT JOIN loan_application la
+        ON l.loan_app_id = la.loan_app_id
+    </select>
+
+</mapper>

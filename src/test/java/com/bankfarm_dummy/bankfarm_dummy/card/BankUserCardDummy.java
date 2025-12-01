@@ -17,6 +17,7 @@ import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -55,36 +56,65 @@ public class BankUserCardDummy extends JpaDummy {
     @Test
     @Rollback(false)
     void insCards() {
+        int SIZE = 310100;
+        int BATCH_SIZE = 100;  // flush 주기
         int empIdx = 0;
-        int SIZE = 100;
+
         List<UserCard> ucList = new ArrayList<>();
         List<CheckCard> checkCardList = new ArrayList<>();
         List<CreditCard> creditCardList = new ArrayList<>();
-        for(int i=0; i<SIZE;i++) {
-            int randomIndex = (int) (Math.random() * customerList2.size());
-            Customer2 c =  customerList2.get(randomIndex);
+
+        List<Customer2> shuffledList = new ArrayList<>(customerList2);
+        Collections.shuffle(shuffledList);
+        List<Account> shuffledAccounts = new ArrayList<>(accountList);
+        Collections.shuffle(shuffledAccounts);
+
+        int total = SIZE;
+        int processed = 0;
+
+        for (int i = 0; i < SIZE; i++) {
+            // ✅ 고객 1명당 1장의 카드만 생성
+            Customer2 c = shuffledList.get(i % shuffledList.size());
             Employees assignedEmp = employeeList.get(empIdx);
             Card assignedCard = cardList.get(faker.random().nextInt(cardList.size()));
-            UserCard uc = generateUserCard(c,assignedCard,assignedEmp);
+            UserCard uc = generateUserCard(c, assignedCard, assignedEmp);
             ucList.add(uc);
-            if(assignedCard.getCardTp()==1) {
-                Account a = accountList.get(faker.random().nextInt(accountList.size()));
-                CheckCard checkCard = generateCheckCard(uc,a);
-                checkCardList.add(checkCard);
-            }else if (assignedCard.getCardTp()==0){
-                CreditCard creditCard = generateCreditCard(uc);
-                creditCardList.add(creditCard);
+
+            if (assignedCard.getCardTp() == 1) {
+                Account a = shuffledAccounts.get(i % shuffledAccounts.size());
+                checkCardList.add(generateCheckCard(uc, a));
+            } else if (assignedCard.getCardTp() == 0) {
+                creditCardList.add(generateCreditCard(uc));
             }
 
             empIdx = (empIdx + 1) % employeeList.size();
+            processed++;
 
+            // ✅ 100개마다 batch 저장
+            if (processed % BATCH_SIZE == 0 || processed == SIZE) {
+                userCardRepository.saveAll(ucList);
+                checkCardRepository.saveAll(checkCardList);
+                creditCardRepository.saveAll(creditCardList);
+
+                userCardRepository.flush();
+                checkCardRepository.flush();
+                creditCardRepository.flush();
+
+                ucList.clear();
+                checkCardList.clear();
+                creditCardList.clear();
+
+                printProgress(processed, total);
+            }
         }
-        userCardRepository.saveAll(ucList);
-        checkCardRepository.saveAll(checkCardList);
-        creditCardRepository.saveAll(creditCardList);
-
-        userCardRepository.flush();
     }
+
+    private void printProgress(int current, int total) {
+        int percent = (current * 100) / total;
+        System.out.printf("진행률: %3d%% (%d / %d)%n", percent, current, total);
+        System.out.flush(); // 즉시 콘솔 반영
+    }
+
 
     CheckCard generateCheckCard(UserCard uc, Account a) {
         return CheckCard.builder()
