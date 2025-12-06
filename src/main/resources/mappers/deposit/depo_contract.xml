@@ -13,8 +13,6 @@
         ,depo_maturity_dt = #{depoMaturityDt}
         ,depo_applied_intrst_rt = #{depoAppliedIntrstRt}
         ,depo_active_cd = #{depoActiveCd}
-        ,depo_payout_bank_cd = #{depoPayoutBankCd}
-        ,depo_payout_acct_num = #{depoPayoutAcctNum}
         ,depo_payout_tp = #{depoPayoutTp}
     </insert>
 

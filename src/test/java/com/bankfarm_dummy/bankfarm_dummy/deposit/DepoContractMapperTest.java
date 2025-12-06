@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DepoContractMapperTest extends Dummy {
-  final int ADD_ROW_COUNT = 1000;
+  final int ADD_ROW_COUNT = 200_000;
   final int CHUNK_SIZE   = 1_000;  // 1,000건마다 중간 commit
 
   @Test
@@ -47,20 +47,24 @@ public class DepoContractMapperTest extends Dummy {
 
       String[] payoutCodes = {"DO031", "DO032", "DO032", "DO032", "DO032"};
 
-      String[] bankCodes = {
-              "BK001", "BK002", "BK003", "BK004", "BK005",
-              "BK006", "BK007", "BK008", "BK009", "BK010",
-              "BK011", "BK012", "BK013", "BK014", "BK015",
-              "BK016", "BK017", "BK018", "BK019", "BK020"
-      };
+//      String[] bankCodes = {
+//              "BK001", "BK002", "BK003", "BK004", "BK005",
+//              "BK006", "BK007", "BK008", "BK009", "BK010",
+//              "BK011", "BK012", "BK013", "BK014", "BK015",
+//              "BK016", "BK017", "BK018", "BK019", "BK020"
+//      };
 
       Random random = new Random();
 
       // 랜덤 생성날짜 종료 일
-      LocalDateTime end = LocalDateTime.of(2025, 11, 30, 23, 59, 59);
+      LocalDateTime end = LocalDateTime.of(2025, 12, 2, 23, 59, 59);
 
       // 현재 날짜
       LocalDate today = LocalDate.now();
+
+      // 비밀번호 암호화
+      BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+      String password = passwordEncoder.encode("1234");
 
       for (int i = 0; i < ADD_ROW_COUNT; i++) {
 
@@ -78,11 +82,6 @@ public class DepoContractMapperTest extends Dummy {
         // 1. 계좌 생성
         // 계좌 번호 생성
         String finalAcctNum = accountNum(accountMapper);
-
-        // 비밀번호 암호화
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String password = passwordEncoder.encode("1234");
-
 
         // 생성 일시(예적금 상품의 판매 시작일 ~ 종료일 사이의 날짜로)
         LocalDateTime start = LocalDateTime.of(prod.getDepoStartDt().getYear(), prod.getDepoStartDt().getMonth(), prod.getDepoStartDt().getDayOfMonth(), 0, 0, 0);
@@ -127,13 +126,13 @@ public class DepoContractMapperTest extends Dummy {
         String payoutTp = payoutCodes[(int) (Math.random() * payoutCodes.length)];
 
         // 지급 방식이 계좌 이체일 시 지급 은행, 계좌 번호 생성
-        String payoutAcctNum = null;
-        String payoutBank = null;
-        if (payoutTp.equals("DO032")) {
-          payoutAcctNum = accountNum(accountMapper);
-
-          payoutBank = bankCodes[(int) (Math.random() * bankCodes.length)];
-        }
+//        String payoutAcctNum = null;
+//        String payoutBank = null;
+//        if (payoutTp.equals("DO032")) {
+//          payoutAcctNum = accountNum(accountMapper);
+//
+//          payoutBank = bankCodes[(int) (Math.random() * bankCodes.length)];
+//        }
 
         // 적용 금리(기본금리 ~ 기본금리 + 우대 금리)
         BigDecimal maxRate = depoContractMapper.selectProdTotalRate(prod.getDepoProdId());
@@ -155,8 +154,6 @@ public class DepoContractMapperTest extends Dummy {
         depoReq.setDepoMaturityDt(maturityDate);
         depoReq.setDepoAppliedIntrstRt(randomRate);
         depoReq.setDepoActiveCd(activeCd);
-        depoReq.setDepoPayoutBankCd(payoutBank);
-        depoReq.setDepoPayoutAcctNum(payoutAcctNum);
         depoReq.setDepoPayoutTp(payoutTp);
 
         depoContractMapper.depoContractInsert(depoReq);
