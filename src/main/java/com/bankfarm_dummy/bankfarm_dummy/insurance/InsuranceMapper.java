@@ -13,7 +13,7 @@ public interface InsuranceMapper {
     int insrTermInsert(InsrTermReq insrTermReq);
 
     List<Long> selectActivePartnerIds();
-    List<Long> selectInsrProdIds();
+    List<InsrProdRes> selectInsrProdIds();
     List<Long> selectEmployeeIds();
     List<Long> selectCustomerIds();
 

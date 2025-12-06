@@ -87,7 +87,7 @@
         SELECT acct_id FROM account
     </select>
 
-    <select id="selectFxRateIds" resultType="com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryRes">
+    <select id="selectAllFxRateHistory" resultType="com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryRes">
         SELECT
         fx_rt_id       AS fxRtId,
         fx_currency_id AS fxCurrencyId,
@@ -95,5 +95,15 @@
         fx_commission  AS fxCommission,
         fx_crt_at      AS fxCrtAt
         FROM fx_rt_history
+    </select>
+
+    <select id="selectAcctCustList"
+            resultType="com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxAcctCustRes">
+        SELECT
+        acct_id AS acctId,
+        cust_id AS custId
+        FROM account
+        WHERE acct_is_ded_yn = 'Y'
+        AND acct_sts_cd = 'AS001'
     </select>
 </mapper>

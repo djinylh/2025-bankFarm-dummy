@@ -1,5 +1,6 @@
 package com.bankfarm_dummy.bankfarm_dummy.foreign_exchange;
 
+import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxAcctCustRes;
 import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxCurrencyExchangeReq;
 import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryReq;
 import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryRes;
@@ -20,4 +21,6 @@ public interface FxMapper {
     List<FxRtHistoryRes> selectAllFxRateHistory();
 
     int insertCurrencyExchange(FxCurrencyExchangeReq req);
+
+    List<FxAcctCustRes> selectAcctCustList();
 }

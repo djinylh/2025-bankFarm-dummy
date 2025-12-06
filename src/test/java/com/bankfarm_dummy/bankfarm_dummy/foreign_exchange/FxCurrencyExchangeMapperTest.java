@@ -3,6 +3,7 @@ package com.bankfarm_dummy.bankfarm_dummy.foreign_exchange;
 import com.bankfarm_dummy.bankfarm_dummy.Dummy;
 import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractMapper;
 import com.bankfarm_dummy.bankfarm_dummy.deposit.DepoContractMapperTest;
+import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxAcctCustRes;
 import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxCurrencyExchangeReq;
 import com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryRes;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class FxCurrencyExchangeMapperTest extends Dummy {
-    final int ADD_ROW_COUNT = 100_000;
+    final int ADD_ROW_COUNT = 5_000_000;
     final int CHUNK_SIZE    = 1_000;
     @Test
     void insertCurrencyExchange() {
@@ -32,6 +33,7 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
             // 1. FK 실제 ID들 전부 미리 조회
             List<Long> empIds  = fxMapper.selectEmployeeIds();
             List<FxAcctCustRes> acctCustList = fxMapper.selectAcctCustList();
+            List<Long> custIds = fxMapper.selectCustomerIds();
 
             // 2. 환율 기록 전부 조회 후 통화별로 그룹핑 + 정렬
             List<FxRtHistoryRes> rtList = fxMapper.selectAllFxRateHistory();
@@ -50,11 +52,11 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
             }
 
             // 환전 대상 통화 배열
-            String[] currencies = {"USD","JPY","CNY","EUR","GBP","AUD","CAD","HKD","SGD","CHF","THB","TWD","PHP"};
+            String[] currencies = {"CNY", "EUR", "GBP", "HKD", "JPY", "USD"};
 
             String[] purposeCodes = {"FX006", "FX007", "FX008", "FX009", "FX010", "FX011", "FX012", "FX013"};
 
-            // 10월 24일 90:00:00 ~ 12월 5일 23:59:59 사이에서만 신청일 생성
+            // 10월 24일 09:00:00 ~ 12월 5일 23:59:59 사이에서만 신청일 생성
             LocalDateTime globalStart = LocalDateTime.of(2025, 10, 24, 9, 0, 0);
             LocalDateTime globalEnd   = LocalDateTime.of(2025, 12, 5, 23, 59, 59);
             Long totalSeconds = java.time.Duration.between(globalStart, globalEnd).getSeconds();
@@ -68,7 +70,6 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
 
                 // FK 뽑기
                 Long empId  = empIds.get(r.nextInt(empIds.size()));
-                Long custId = custIds.get(r.nextInt(custIds.size()));
 
                 // 3. 통화 / 신청일 랜덤
                 String currency = currencies[r.nextInt(currencies.length)];
@@ -111,6 +112,7 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
 
                 Long fromAcctId = null;
                 Long toAcctId   = null;
+                Long custId = null;
                 BigDecimal fromAmt;
                 BigDecimal toAmt;
                 String fxTrnsTp;
@@ -139,11 +141,10 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
                             .setScale(4, RoundingMode.HALF_UP);
 
                 } else {
-                    fxTrnsTp = "EX005"; // 현금 -> 외화
+                    fxTrnsTp = "FX005"; // 현금 -> 외화
 
                     // 계좌 없는 타입이지만 고객은 실제 존재해야 함
-                    FxAcctCustRes pair = acctCustList.get(r.nextInt(acctCustList.size()));
-                    custId = pair.getCustId();
+                    custId = custIds.get(r.nextInt(custIds.size()));
 
                     long raw = 100_000 + (long) (r.nextDouble() * (2_000_000 - 100_000)); // 원화
                     fromAmt = BigDecimal.valueOf(raw);
@@ -156,7 +157,11 @@ public class FxCurrencyExchangeMapperTest extends Dummy {
                 long plusDays = (long) (r.nextDouble() * 3);
                 LocalDateTime fxTrnsDt = fxReqDt.plusDays(plusDays);
 
-                String fxTrnsCd = "ST001";
+                if (fxTrnsDt.isBefore(fxReqDt)) {
+                    fxTrnsDt = fxReqDt;
+                }
+
+                String fxTrnsCd = "FX023";
 
                 FxCurrencyExchangeReq req = FxCurrencyExchangeReq.builder()
                         .fxRtId(fxRtId)

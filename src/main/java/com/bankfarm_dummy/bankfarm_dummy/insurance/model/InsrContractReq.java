@@ -15,6 +15,7 @@ public class InsrContractReq {
     private Long insrProdId;
     private Long custId;
     private Long empId;
+    private Long partId;
     private String insrContractNum;
     private String insrBankCd;
     private String insrAcctNum;
