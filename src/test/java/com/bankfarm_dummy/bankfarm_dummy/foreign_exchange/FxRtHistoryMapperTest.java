@@ -43,7 +43,7 @@ public class FxRtHistoryMapperTest extends Dummy {
         fxRanges.put("TWD", new double[]{35, 45});
         fxRanges.put("PHP", new double[]{20, 30});
 
-        LocalDateTime today9 = LocalDate.now().atTime(9, 0);
+        LocalDateTime today9 = LocalDateTime.of(2025, 11, 26, 9, 0, 0);;
 
         for (String cur : currencyList) {
 
@@ -54,7 +54,7 @@ public class FxRtHistoryMapperTest extends Dummy {
             double baseRate = min + rnd.nextDouble() * (max - min);
 
             // 일수 30일 더미
-            for (int i = 0; i < 30; i++) {
+            for (int i = 0; i < 3; i++) {
 
                 // 전날 대비 ±0.5% 변동
                 double rate = baseRate * (0.995 + rnd.nextDouble() * 0.01);
@@ -71,7 +71,7 @@ public class FxRtHistoryMapperTest extends Dummy {
                 req.setFxCurrencyId(cur);
                 req.setFxChargeRt(bdRate);
                 req.setFxCommission(commission);
-                req.setFxCrtAt(today9.minusDays(30 - i));
+                req.setFxCrtAt(today9.minusDays(3 - i));
 
                 fxMapper.insertFxRateHistory(req);
 

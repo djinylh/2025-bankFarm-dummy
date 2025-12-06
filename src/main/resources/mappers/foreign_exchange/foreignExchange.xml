@@ -63,4 +63,37 @@
         AND DATE(fx_crt_at) = #{baseDate}
         LIMIT 1
     </select>
+
+<!--    환전 거래 인서트-->
+    <insert id="insertCurrencyExchange">
+        INSERT INTO fx_currency_exchange
+        SET
+        fx_rt_id = #{fxRtId}
+        , emp_id = #{empId}
+        , cust_id = #{custId}
+        , fx_from_acct_id = #{fxFromAcctId}
+        , fx_to_acct_id = #{fxToAcctId}
+        , fx_from_amt = #{fxFromAmt}
+        , fx_to_amt = #{fxToAmt}
+        , fx_trns_tp = #{fxTrnsTp}
+        , fx_exchange_purpose = #{fxExchangePurpose}
+        , fx_req_dt = #{fxReqDt}
+        , fx_trns_dt = #{fxTrnsDt}
+        , fx_trns_cd = #{fxTrnsCd}
+
+    </insert>
+
+    <select id="selectAccountIds" resultType="long">
+        SELECT acct_id FROM account
+    </select>
+
+    <select id="selectFxRateIds" resultType="com.bankfarm_dummy.bankfarm_dummy.foreign_exchange.model.FxRtHistoryRes">
+        SELECT
+        fx_rt_id       AS fxRtId,
+        fx_currency_id AS fxCurrencyId,
+        fx_charge_rt   AS fxChargeRt,
+        fx_commission  AS fxCommission,
+        fx_crt_at      AS fxCrtAt
+        FROM fx_rt_history
+    </select>
 </mapper>
