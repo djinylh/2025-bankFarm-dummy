@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractMapper">
+
+    <!--  depo_contract PK가 생긴다면 DepoContractInsertReq depoContractId쪽으로 바로 PK를 주입하겠다  -->
+    <insert id="depoContractInsert" parameterType="com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractInsertReq" useGeneratedKeys="true" keyProperty="depoContractId">
+        INSERT INTO depo_contract
+        SET cust_id = #{custId}
+        ,depo_prod_id = #{depoProdId}
+        ,acct_id = #{acctId}
+        ,emp_id = #{empId}
+        ,depo_contract_dt = #{depoContractDt}
+        ,depo_maturity_dt = #{depoMaturityDt}
+        ,depo_applied_intrst_rt = #{depoAppliedIntrstRt}
+        ,depo_active_cd = #{depoActiveCd}
+        ,depo_payout_tp = #{depoPayoutTp}
+    </insert>
+
+    <!--    직원 아이디 가져오기-->
+    <select id="selectEmployeeIds" resultType="long">
+        SELECT emp_id
+        FROM employees
+    </select>
+
+    <!--    고객 아이디 가져오기-->
+    <select id="selectCustomerIds" resultType="long">
+        SELECT cust_id
+        FROM customer
+    </select>
+
+<!--    요구불 제외한 상품 정보 가져오기-->
+    <select id="selectDepoProds" resultType="com.bankfarm_dummy.bankfarm_dummy.depo.DepoProdSelectRes">
+        SELECT p.depo_prod_id AS depoProdId,
+            p.depo_prod_tp AS depoProdTp,
+            p.depo_st_dt AS depoStartDt,
+            p.depo_ed_dt AS depoEndDt,
+            t.depo_term_month AS depoTermMonth,
+            t.depo_min_amt AS depoMinAmt,
+            t.depo_max_amt AS depoMaxAmt
+        FROM depo_prod p
+        JOIN depo_prod_term t
+        ON p.depo_prod_id = t.depo_prod_id
+        WHERE p.depo_prod_tp != 'DO001'
+    </select>
+
+<!--    요구불 제외한 상품 아이디 가져오기-->
+    <select id="selectDepoProdIds">
+        SELECT depo_prod_id
+        FROM depo_prod
+        WHERE depo_prod_tp != 'DO001'
+    </select>
+
+<!--    우대 금리 가져오기 -->
+    <select id="selectRateRule">
+        SELECT rt_id
+        FROM rate_rule
+        WHERE rt_tp = 'RT001'
+    </select>
+<!--    상품 금리에 데이터 넣기-->
+    <insert id="insertDepoProdRate">
+        INSERT INTO prod_rate
+        SET
+        prod_tp = #{prodTp},
+        prod_id = #{prodId},
+        prod_rt_id = #{prodRtId}
+    </insert>
+
+<!--    상품 아이디당 금리 더하기-->
+    <select id="selectProdTotalRate">
+        SELECT SUM(r.rt_pct) AS total_pref_rate
+        FROM rate_rule r
+        JOIN prod_rate p
+        ON p.prod_rt_id = r.rt_id
+        WHERE p.prod_id = #{prodId}
+        AND p.prod_tp = 'RT006'
+        GROUP BY p.prod_id;
+    </select>
+
+<!--    예금 계약 상세 데이터 넣기-->
+    <insert id="insertDepoContractDeposit">
+        INSERT INTO depo_contract_deposit
+        SET
+        depo_contract_id = #{depoContractId},
+        depo_prncp_amt = #{depoPrncpAmt}
+    </insert>
+
+<!--    적금 계약 상세 데이터 넣기-->
+    <insert id="insertDepoContractSavings">
+        INSERT INTO depo_contract_savings
+        SET
+        depo_contract_id = #{depoContractId},
+        depo_payment_day = #{depoPaymentDay},
+        depo_monthly_amt = #{depoMonthlyAmt}
+    </insert>
+
+<!--    정기 적금 납입 내역 데이터 넣기-->
+    <insert id="insertDepoSavingsPayment">
+        INSERT INTO depo_savings_payment
+        SET
+        depo_contract_id = #{depoContractId},
+        depo_paid_dt = #{depoPaidDt},
+        depo_paid_amt = #{depoPaidAmt},
+        depo_payment_yn = #{depoPaymentYn}
+    </insert>
+
+<!--    계약 담당 직원 지점 아이디 가져오기-->
+    <select id="selectBranchIdByEmpId">
+        SELECT bran_id
+        FROM employees
+        WHERE emp_id = #{empId}
+    </select>
+</mapper>

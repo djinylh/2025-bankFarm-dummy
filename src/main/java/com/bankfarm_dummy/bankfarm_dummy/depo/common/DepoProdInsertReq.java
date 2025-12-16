@@ -12,9 +12,10 @@ public class DepoProdInsertReq {
     private String depoProdNm;
     private LocalDate depoStDt;
     private LocalDate depoEdDt;
+    private String depoProdTp;
     private String depoPodDes;
     private String depoIntrstCalcUnit;
     private String depoIntrstPayCycle;
     private String depoIntrstCalcTp;
-    private char depoSaleYn;
+    private String depoSaleYn;
 }

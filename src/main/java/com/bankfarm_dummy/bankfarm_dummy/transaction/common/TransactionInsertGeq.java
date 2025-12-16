@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -15,4 +17,5 @@ public class TransactionInsertGeq {
     private long trnsBal;
     private byte trnsTp;
     private String trnsDes;
+    private LocalDateTime trnsCrtAt;
 }

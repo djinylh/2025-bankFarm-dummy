@@ -1,7 +1,12 @@
 package com.bankfarm_dummy.bankfarm_dummy.insurance;
 
 import com.bankfarm_dummy.bankfarm_dummy.Dummy;
+import com.bankfarm_dummy.bankfarm_dummy.depo.common.DepoContractMapper;
 import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrContractReq;
+import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrProdDocRes;
+import com.bankfarm_dummy.bankfarm_dummy.insurance.model.InsrProdRes;
+import com.bankfarm_dummy.bankfarm_dummy.prod_document.ProdDocumentMapper;
+import com.bankfarm_dummy.bankfarm_dummy.prod_document.model.ProdDocumentReq;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
@@ -10,19 +15,18 @@ import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class InsrContractMapperTest extends Dummy {
-    final int ADD_ROW_COUNT = 500;
+    final int ADD_ROW_COUNT = 500_000;
 
     @Test
     void insertInsrProd() {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
         InsuranceMapper insrMapper = sqlSession.getMapper(InsuranceMapper.class);
 
-        // 보험 상품 ID 리스트
-        List<Long> prodIds = insrMapper.selectInsrProdIds();
+        // 보험 상품 ID, 제휴사 ID 리스트
+        List<InsrProdRes> prodIds = insrMapper.selectInsrProdIds();
 
         // 직원 ID 리스트
         List<Long> empIds = insrMapper.selectEmployeeIds();
@@ -40,14 +44,27 @@ public class InsrContractMapperTest extends Dummy {
                 null // 직접 납부용
         };
 
+        Map<Long, Set<String>> contractNumCache = new HashMap<>();
+
         for (int i = 0; i < ADD_ROW_COUNT; i++) {
 
-            Long prodId = prodIds.get(rnd.nextInt(prodIds.size()));
+            InsrProdRes prodIdAndPartId = prodIds.get(rnd.nextInt(prodIds.size()));
+            Long partId = prodIdAndPartId.getPartId();
+            Long prodId = prodIdAndPartId.getProdId();
             Long empId = empIds.get(rnd.nextInt(empIds.size()));
-            Long custID =  custIds.get(rnd.nextInt(custIds.size()));
+            Long custId =  custIds.get(rnd.nextInt(custIds.size()));
 
-            // 계약번호
-            String contractNum = "IC" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + String.format("%06d", rnd.nextInt(1_000_000));
+
+            // partId별로 이미 쓴 계약번호 캐시 준비
+            Set<String> usedNums = contractNumCache.computeIfAbsent(partId, k -> new HashSet<>());
+
+            // 중복 안 나올 때까지 계약번호 생성
+            String contractNum;
+            do {
+                contractNum = "IC"
+                        + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+                        + String.format("%06d", rnd.nextInt(1_000_000));
+            } while (!usedNums.add(contractNum)); // 이미 있으면 false, 다시 생성
 
             // 계약일 (최근 1~5년 사이)
             LocalDateTime contractDt = LocalDateTime.now()
@@ -102,8 +119,9 @@ public class InsrContractMapperTest extends Dummy {
             InsrContractReq req = new InsrContractReq();
 
             req.setInsrProdId(prodId);
-            req.setCustId(custID);
+            req.setCustId(custId);
             req.setEmpId(empId);
+            req.setPartId(partId);
             req.setInsrContractNum(contractNum);
             req.setInsrBankCd(bankCd);
             req.setInsrAcctNum(acctNum);
@@ -118,7 +136,7 @@ public class InsrContractMapperTest extends Dummy {
 
             insrMapper.insrContractInsert(req);
 
-            if (i % 200 == 0) {
+            if (i > 0 && i % 200 == 0) {
                 sqlSession.flushStatements();
             }
         }
@@ -126,5 +144,26 @@ public class InsrContractMapperTest extends Dummy {
         sqlSession.commit();
         sqlSession.close();
 
+    }
+
+    @Test
+    void insertProdDoc() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        InsuranceMapper insuranceMapper = sqlSession.getMapper(InsuranceMapper.class);
+        ProdDocumentMapper prodDocumentMapper = sqlSession.getMapper(ProdDocumentMapper.class);
+
+        List<InsrProdDocRes> prodDocResList = insuranceMapper.selectInsrContractIdAndBranId();
+
+        for (InsrProdDocRes prodDocRes : prodDocResList) {
+
+            ProdDocumentReq documentReq = new ProdDocumentReq();
+            documentReq.setBranId(prodDocRes.getBranId());
+            documentReq.setDocNm("보험 계약 문서 제목");
+            documentReq.setDocProdTp("PD009");
+            documentReq.setDocProdId(prodDocRes.getContractId());
+            documentReq.setDocCrtAt(prodDocRes.getContractDate());
+
+            prodDocumentMapper.prodDocumentJoin(documentReq);
+        }
     }
 }

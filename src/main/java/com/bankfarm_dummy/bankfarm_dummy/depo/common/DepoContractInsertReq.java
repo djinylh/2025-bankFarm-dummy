@@ -16,9 +16,11 @@ public class DepoContractInsertReq {
     private long depoProdId;
     private long acctId;
     private long empId;
-    private String depoProdTp;
     private LocalDate depoContractDt;
     private LocalDate depoMaturityDt;
     private BigDecimal depoAppliedIntrstRt;
     private String depoActiveCd;
+    private String depoPayoutBankCd;
+    private String depoPayoutAcctNum;
+    private String depoPayoutTp;
 }

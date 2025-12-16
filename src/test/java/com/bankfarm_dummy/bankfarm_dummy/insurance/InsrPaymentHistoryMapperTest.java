@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 public class InsrPaymentHistoryMapperTest extends Dummy {
+    static final int CHUNK_SIZE = 5_000;
     @Test
     void insertInsrPaymentHistory() throws Exception {
         SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
@@ -22,6 +23,8 @@ public class InsrPaymentHistoryMapperTest extends Dummy {
 
         LocalDate today = LocalDate.now();
         Random rnd = new Random();
+
+        long insertCount = 0;
 
         for (InsrContractRes con : contracts) {
 
@@ -92,15 +95,20 @@ public class InsrPaymentHistoryMapperTest extends Dummy {
                 req.setInsrOdYn(odYn);
 
                 insrMapper.insrPaymentHistoryInsert(req);
+                insertCount++;
+
+                if (insertCount % CHUNK_SIZE == 0) {
+                    sqlSession.flushStatements();
+                }
 
                 // 회차 증가
                 seq++;
                 payDate = payDate.plusMonths(1);
             }
 
-            sqlSession.flushStatements();
         }
 
+        sqlSession.flushStatements();
         sqlSession.commit();
         sqlSession.close();
 
